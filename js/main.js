@@ -496,8 +496,12 @@ function selectFrequency(frequency) {
 }
 
 function updateFrequencyInfo() {
-  const frequency = document.getElementById('frequency').value;
+  const frequencyEl = document.getElementById('frequency');
   const recurringInfo = document.getElementById('recurringInfo');
+
+  if (!frequencyEl || !recurringInfo) return;
+
+  const frequency = frequencyEl.value;
 
   if (frequency === 'every4weeks') {
     recurringInfo.style.display = 'block';
@@ -510,13 +514,21 @@ function updateFrequencyInfo() {
 }
 
 function updateBinPriceLabels() {
-  const frequency = document.getElementById('frequency').value;
+  const frequencyEl = document.getElementById('frequency');
+  if (!frequencyEl) return;
+
+  const frequency = frequencyEl.value;
   const label = frequency === 'every4weeks' ? '(Every 4 Weeks)' : '(One-Off)';
 
-  document.getElementById('wastePriceLabel').textContent = label;
-  document.getElementById('foodPriceLabel').textContent = label;
-  document.getElementById('recyclingPriceLabel').textContent = label;
-  document.getElementById('gardenPriceLabel').textContent = label;
+  const wastePriceLabel = document.getElementById('wastePriceLabel');
+  const foodPriceLabel = document.getElementById('foodPriceLabel');
+  const recyclingPriceLabel = document.getElementById('recyclingPriceLabel');
+  const gardenPriceLabel = document.getElementById('gardenPriceLabel');
+
+  if (wastePriceLabel) wastePriceLabel.textContent = label;
+  if (foodPriceLabel) foodPriceLabel.textContent = label;
+  if (recyclingPriceLabel) recyclingPriceLabel.textContent = label;
+  if (gardenPriceLabel) gardenPriceLabel.textContent = label;
 }
 
 // ============================================
@@ -540,23 +552,32 @@ function decrementBin(binType) {
 
 function updateBinDisplay(binType) {
   const quantity = bookingData.bins[binType];
-  document.getElementById(binType + 'Quantity').textContent = quantity;
+  const quantityEl = document.getElementById(binType + 'Quantity');
+  const decrementBtn = document.getElementById(binType + 'Decrement');
+
+  // Only update if elements exist (on booking page)
+  if (quantityEl) {
+    quantityEl.textContent = quantity;
+  }
 
   // Enable/disable decrement button
-  const decrementBtn = document.getElementById(binType + 'Decrement');
-  if (quantity === 0) {
-    decrementBtn.disabled = true;
-  } else {
-    decrementBtn.disabled = false;
+  if (decrementBtn) {
+    if (quantity === 0) {
+      decrementBtn.disabled = true;
+    } else {
+      decrementBtn.disabled = false;
+    }
   }
 }
 
 function updateCardSelection(binType) {
   const card = document.querySelector(`.bin-selection-card[data-bin="${binType}"]`);
-  if (bookingData.bins[binType] > 0) {
-    card.classList.add('selected');
-  } else {
-    card.classList.remove('selected');
+  if (card) {
+    if (bookingData.bins[binType] > 0) {
+      card.classList.add('selected');
+    } else {
+      card.classList.remove('selected');
+    }
   }
 }
 
@@ -573,8 +594,15 @@ function updateTotal() {
   bookingData.totalBins = totalBins;
   bookingData.totalPrice = totalPrice;
 
-  document.getElementById('totalBins').textContent = totalBins;
-  document.getElementById('totalPrice').textContent = totalPrice.toFixed(2);
+  const totalBinsEl = document.getElementById('totalBins');
+  const totalPriceEl = document.getElementById('totalPrice');
+
+  if (totalBinsEl) {
+    totalBinsEl.textContent = totalBins;
+  }
+  if (totalPriceEl) {
+    totalPriceEl.textContent = totalPrice.toFixed(2);
+  }
 }
 
 // ============================================
