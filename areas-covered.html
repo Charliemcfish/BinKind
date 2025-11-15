@@ -6,11 +6,6 @@
     <meta name="description" content="BinKind serves Yeovil, Chard, Crewkerne, Sherborne and surrounding areas. Find out if we cover your postcode for professional bin cleaning services.">
     <title>Areas We Cover - BinKind Bin Cleaning Service</title>
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
     <!-- Stylesheet -->
     <link rel="stylesheet" href="css/styles.css">
 
@@ -54,13 +49,17 @@
         <a href="book-your-clean.html" class="btn btn-primary btn-large">Book Your Clean</a>
     </div>
 
-    <!-- Page Header -->
-    <section class="hero" style="min-height: 50vh; margin-top: 70px;">
-        <div class="container">
-            <div class="hero-content">
-                <h1>Areas We Cover</h1>
-                <p class="hero-subtitle">Proudly serving Yeovil, Chard, Crewkerne, Sherborne and surrounding communities with professional bin cleaning services</p>
+    <!-- Hero Section - New Split Design -->
+    <section class="hero hero-compact">
+        <div class="hero-split">
+            <div class="hero-content-side">
+                <div class="hero-content-inner">
+                    <h1>Areas We Cover</h1>
+                    <div class="hero-divider"></div>
+                    <p class="hero-subtitle">Proudly serving Yeovil, Chard, Crewkerne, Sherborne and surrounding communities with professional bin cleaning services</p>
+                </div>
             </div>
+            <div class="hero-image-side" style="background-image: url('assets/binkind-van.jpg');"></div>
         </div>
     </section>
 
@@ -72,45 +71,9 @@
                 <p class="section-subtitle">We provide reliable, professional bin cleaning across the following areas in Somerset</p>
             </div>
 
-            <!-- Coverage Map Placeholder -->
-            <div class="areas-map">
-                <div style="background: white; padding: 3rem; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
-                    <div style="text-align: center; margin-bottom: 2rem;">
-                        <h3 style="color: #5b8855; margin-bottom: 1rem;">Primary Service Areas</h3>
-                        <p style="color: #424242;">We currently provide bin cleaning services in the following towns and their surrounding areas:</p>
-                    </div>
-
-                    <!-- Interactive Map Placeholder -->
-                    <div style="background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%); border-radius: 8px; padding: 3rem; margin-bottom: 2rem; min-height: 300px; display: flex; align-items: center; justify-content: center; position: relative;">
-                        <div style="text-align: center;">
-                            <div style="font-size: 4rem; margin-bottom: 1rem;">🗺️</div>
-                            <p style="font-size: 1.125rem; color: #424242; max-width: 500px;">
-                                <strong>Somerset Service Map</strong><br>
-                                Covering Yeovil, Chard, Crewkerne, Sherborne and surrounding villages
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Areas Grid -->
-                    <div class="areas-grid">
-                        <div class="area-card">
-                            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📍</div>
-                            <strong>Yeovil</strong>
-                        </div>
-                        <div class="area-card">
-                            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📍</div>
-                            <strong>Chard</strong>
-                        </div>
-                        <div class="area-card">
-                            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📍</div>
-                            <strong>Crewkerne</strong>
-                        </div>
-                        <div class="area-card">
-                            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📍</div>
-                            <strong>Sherborne</strong>
-                        </div>
-                    </div>
-                </div>
+            <!-- Snazzy Maps Integration -->
+            <div class="snazzy-map-container animate-on-scroll">
+                <iframe src="https://snazzymaps.com/embed/754063" width="100%" height="600px" style="border:none;"></iframe>
             </div>
         </div>
     </section>
