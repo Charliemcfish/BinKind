@@ -654,6 +654,20 @@ function populateSummary() {
 
   // Total
   document.getElementById('summaryTotal').textContent = bookingData.totalPrice.toFixed(2);
+
+  // Update payment flow text based on frequency
+  const paymentFlowRecurring = document.getElementById('paymentFlowRecurring');
+  const paymentFlowOneOff = document.getElementById('paymentFlowOneOff');
+
+  if (paymentFlowRecurring && paymentFlowOneOff) {
+    if (bookingData.frequency === 'every4weeks') {
+      paymentFlowRecurring.style.display = 'list-item';
+      paymentFlowOneOff.style.display = 'none';
+    } else {
+      paymentFlowRecurring.style.display = 'none';
+      paymentFlowOneOff.style.display = 'list-item';
+    }
+  }
 }
 
 // ============================================
@@ -769,39 +783,54 @@ function nextMonth() {
 // ============================================
 // COMPLETE BOOKING
 // ============================================
-function completeBooking() {
+async function completeBooking() {
   if (!validateStep4()) {
     return;
   }
 
   saveStepData(4);
 
-  // Generate booking reference
-  const bookingRef = 'BK' + Date.now().toString().slice(-8);
+  // Show loading state
+  const completeButton = document.querySelector('.form-step[data-step="4"] .btn-primary');
+  const originalButtonText = completeButton.innerHTML;
+  completeButton.disabled = true;
+  completeButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing your booking...';
 
-  // Populate modal
-  document.getElementById('bookingRef').textContent = bookingRef;
-  document.getElementById('modalName').textContent = bookingData.customerName;
+  try {
+    // Call Netlify Function to create payment
+    const response = await fetch('/.netlify/functions/create-payment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(bookingData)
+    });
 
-  const dateStr = selectedDate.toLocaleDateString('en-GB', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-  document.getElementById('modalDate').textContent = dateStr;
+    const result = await response.json();
 
-  document.getElementById('modalBins').textContent = bookingData.totalBins;
-  document.getElementById('modalTotal').textContent = bookingData.totalPrice.toFixed(2);
+    if (!response.ok) {
+      throw new Error(result.message || result.error || 'Failed to initialize payment');
+    }
 
-  const frequencyText = bookingData.frequency === 'every4weeks' ?
-    'Every 4 Weeks (Recurring)' : 'One-Off Clean';
-  document.getElementById('modalFrequency').textContent = frequencyText;
+    // Store booking data in sessionStorage for callback
+    sessionStorage.setItem('bookingData', JSON.stringify(bookingData));
+    sessionStorage.setItem('sessionToken', result.sessionToken);
 
-  document.getElementById('modalEmail').textContent = bookingData.email;
+    // Redirect to GoCardless payment page
+    window.location.href = result.redirectUrl + '&booking_data=' + result.bookingData;
 
-  // Show modal
-  showModal();
+  } catch (error) {
+    console.error('Error creating payment:', error);
+
+    // Show error message
+    alert('Sorry, we encountered an error processing your booking.\n\n' +
+          error.message + '\n\n' +
+          'Please try again or call us at 07777 777777 for assistance.');
+
+    // Reset button
+    completeButton.disabled = false;
+    completeButton.innerHTML = originalButtonText;
+  }
 }
 
 // ============================================

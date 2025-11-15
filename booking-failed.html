@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Booking payment failed - Please try again or contact BinKind">
+    <title>Booking Failed - BinKind</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/BinKind Icon Black + Green.png">
+
+    <style>
+        .failed-container {
+            max-width: 800px;
+            margin: 120px auto 60px;
+            padding: 0 20px;
+        }
+
+        .failed-card {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .failed-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #e53935 0%, #c62828 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            animation: shake 0.5s ease-out;
+        }
+
+        .failed-icon i {
+            font-size: 50px;
+            color: white;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+
+        .failed-card h1 {
+            color: #1b1b1b;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .failed-card p.subtitle {
+            color: #424242;
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .error-box {
+            background: #ffebee;
+            border: 2px solid #e53935;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .error-box h3 {
+            color: #c62828;
+            margin: 0 0 0.5rem 0;
+            font-size: 1.25rem;
+        }
+
+        .error-box p {
+            color: #424242;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .info-box h3 {
+            color: #1976d2;
+            margin: 0 0 0.5rem 0;
+            font-size: 1.125rem;
+        }
+
+        .info-box p {
+            margin: 0.5rem 0;
+            color: #424242;
+            line-height: 1.6;
+        }
+
+        .info-box ul {
+            margin: 0.5rem 0 0 1.5rem;
+            color: #424242;
+        }
+
+        .info-box li {
+            margin: 0.25rem 0;
+        }
+
+        .contact-box {
+            background: #5b8855;
+            color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .contact-box h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1.5rem;
+        }
+
+        .contact-box p {
+            margin: 0.5rem 0;
+            font-size: 1.125rem;
+        }
+
+        .contact-box a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .failed-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .failed-card h1 {
+                font-size: 2rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body style="position: relative; background-color: #f5f5f5;">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo">
+                <img src="assets/BinKind Logo White + Green.png" alt="BinKind Logo">
+            </a>
+
+            <!-- Desktop Menu -->
+            <div class="navbar-menu">
+                <div class="navbar-links">
+                    <a href="index.html" class="navbar-link">Home</a>
+                    <a href="areas-covered.html" class="navbar-link">Areas Covered</a>
+                    <a href="contact.html" class="navbar-link">Contact</a>
+                </div>
+                <div class="navbar-cta">
+                    <a href="book-your-clean.html" class="btn btn-primary">Book Your Clean</a>
+                </div>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="navbar-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu">
+        <a href="index.html" class="navbar-link">Home</a>
+        <a href="areas-covered.html" class="navbar-link">Areas Covered</a>
+        <a href="contact.html" class="navbar-link">Contact</a>
+        <a href="book-your-clean.html" class="btn btn-primary btn-large">Book Your Clean</a>
+    </div>
+
+    <!-- Failed Container -->
+    <div class="failed-container">
+        <div class="failed-card">
+            <!-- Failed Icon -->
+            <div class="failed-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+
+            <!-- Failed Message -->
+            <h1>Booking Not Completed</h1>
+            <p class="subtitle" id="failedSubtitle">Your payment was not processed</p>
+
+            <!-- Error Details -->
+            <div class="error-box">
+                <h3><i class="fas fa-info-circle"></i> What Happened?</h3>
+                <p id="errorMessage">Your payment was unsuccessful. This could be due to payment cancellation, declined payment, or a technical issue.</p>
+            </div>
+
+            <!-- What to Do Next -->
+            <div class="info-box">
+                <h3>What You Can Do:</h3>
+                <ul>
+                    <li><strong>Try Again:</strong> Click the button below to return to the booking form and try again</li>
+                    <li><strong>Check Payment Details:</strong> Ensure your payment information is correct</li>
+                    <li><strong>Contact Your Bank:</strong> If the problem persists, contact your bank to ensure there are no issues with your account</li>
+                    <li><strong>Call Us:</strong> We're happy to help you complete your booking over the phone</li>
+                </ul>
+            </div>
+
+            <!-- Don't Worry Box -->
+            <div class="info-box" style="background: #e8f5e9; border-left-color: #5b8855;">
+                <h3 style="color: #5b8855;"><i class="fas fa-shield-alt"></i> Your Information is Safe</h3>
+                <p>No payment was taken from your account, and your booking details were not saved. You can try booking again whenever you're ready.</p>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="contact-box">
+                <h3>Need Help? Contact Us</h3>
+                <p><i class="fas fa-phone"></i> Call us at: <a href="tel:07777777777">07777 777777</a></p>
+                <p><i class="fas fa-envelope"></i> Email: <a href="mailto:info@binkind.com">info@binkind.com</a></p>
+                <p style="margin-top: 1rem; font-size: 1rem; opacity: 0.9;">
+                    We're here Monday-Friday, 8am-6pm
+                </p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a href="book-your-clean.html" class="btn btn-primary">
+                    <i class="fas fa-redo"></i> Try Booking Again
+                </a>
+                <a href="contact.html" class="btn btn-secondary">
+                    <i class="fas fa-phone"></i> Contact Us
+                </a>
+                <a href="index.html" class="btn btn-secondary">
+                    <i class="fas fa-home"></i> Return Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <!-- About Section -->
+                <div class="footer-section">
+                    <img src="assets/BinKind Logo White + Green.png" alt="BinKind Logo" class="footer-logo">
+                    <p class="footer-tagline">
+                        Professional wheelie bin cleaning service for homes and businesses across Yeovil and Somerset. Eco-friendly, reliable, and affordable.
+                    </p>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <div class="footer-links">
+                        <a href="index.html" class="footer-link">Home</a>
+                        <a href="areas-covered.html" class="footer-link">Areas Covered</a>
+                        <a href="contact.html" class="footer-link">Contact Us</a>
+                        <a href="book-your-clean.html" class="footer-link">Book Now</a>
+                    </div>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <div class="contact-info">
+                        <a href="tel:07777777777" class="contact-item">
+                            <span><i class="fas fa-phone"></i></span>
+                            <span>07777 777777</span>
+                        </a>
+                        <a href="mailto:info@binkind.com" class="contact-item">
+                            <span><i class="fas fa-envelope"></i></span>
+                            <span>info@binkind.com</span>
+                        </a>
+                        <div class="contact-item">
+                            <span><i class="fas fa-clock"></i></span>
+                            <span>Mon-Fri: 8am - 6pm</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 BinKind. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/main.js"></script>
+    <script>
+        // Parse failure reason from URL parameters
+        function loadFailureReason() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const reason = urlParams.get('reason');
+            const message = urlParams.get('message');
+
+            const errorMessageEl = document.getElementById('errorMessage');
+            const subtitleEl = document.getElementById('failedSubtitle');
+
+            if (reason === 'cancelled') {
+                subtitleEl.textContent = 'Payment was cancelled';
+                errorMessageEl.textContent = 'You cancelled the payment process. No charges were made to your account.';
+            } else if (reason === 'error' && message) {
+                subtitleEl.textContent = 'An error occurred';
+                errorMessageEl.textContent = decodeURIComponent(message);
+            } else if (message) {
+                errorMessageEl.textContent = decodeURIComponent(message);
+            }
+        }
+
+        // Load failure reason when page loads
+        document.addEventListener('DOMContentLoaded', loadFailureReason);
+    </script>
+</body>
+</html>

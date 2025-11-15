@@ -1,0 +1,26 @@
+{
+  "name": "binkind-functions",
+  "version": "1.0.0",
+  "description": "BinKind Bin Cleaning Service - Netlify Functions for GoCardless payment integration",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "binkind",
+    "bin-cleaning",
+    "gocardless",
+    "netlify-functions"
+  ],
+  "author": "BinKind",
+  "license": "ISC",
+  "dependencies": {
+    "gocardless-nodejs": "^3.0.0",
+    "node-fetch": "^2.6.1",
+    "nodemailer": "^6.9.0"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.x"
+  }
+}

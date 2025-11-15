@@ -1,0 +1,70 @@
+# ============================================
+# BinKind - Netlify Configuration
+# ============================================
+
+[build]
+  # Directory containing serverless functions
+  functions = "netlify/functions"
+
+  # Directory to publish (root directory for static files)
+  publish = "."
+
+  # Build command (not needed for static site, but can add if using build tools)
+  # command = "npm run build"
+
+[functions]
+  # Use esbuild for bundling functions (faster and more efficient)
+  node_bundler = "esbuild"
+
+# ============================================
+# REDIRECTS & REWRITES
+# ============================================
+
+# Rewrite API calls to Netlify Functions
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Success page redirect
+[[redirects]]
+  from = "/booking-success"
+  to = "/booking-success.html"
+  status = 200
+
+# Failure page redirect
+[[redirects]]
+  from = "/booking-failed"
+  to = "/booking-failed.html"
+  status = 200
+
+# ============================================
+# HEADERS
+# ============================================
+
+# Add security headers to all pages
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# CORS headers for API endpoints
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Headers = "Content-Type"
+    Access-Control-Allow-Methods = "GET, POST, OPTIONS"
+
+# ============================================
+# ENVIRONMENT VARIABLES (Set in Netlify Dashboard)
+# ============================================
+# Required environment variables:
+# - GOCARDLESS_ACCESS_TOKEN: Your GoCardless API access token
+# - GOCARDLESS_ENVIRONMENT: "Sandbox" or "Live"
+# - CLIENT_EMAIL: Email address for booking notifications (e.g., charlielfisher@hotmail.com)
+# - SITE_URL: Your Netlify site URL (e.g., https://binkind.netlify.app)
+# - GOCARDLESS_WEBHOOK_SECRET: (Optional) Secret for verifying webhooks

@@ -4,7 +4,12 @@ A modern, responsive website for BinKind's professional wheelie bin cleaning ser
 
 ## 🌟 Project Overview
 
-BinKind is a complete website solution for a mobile bin cleaning service, featuring an intuitive booking system, service area information, and professional branding. This is **Phase 1** of the project, focusing on the complete UI/UX and frontend functionality.
+BinKind is a complete website solution for a mobile bin cleaning service, featuring an intuitive booking system, service area information, and professional branding.
+
+**Current Status**: **Phase 2 COMPLETE** ✅
+
+- ✅ Phase 1: Complete UI/UX and frontend functionality
+- ✅ Phase 2: GoCardless payment integration, Netlify Functions, email notifications, and end-to-end booking flow
 
 ## 🎨 Design & Branding
 
@@ -29,21 +34,35 @@ BinKind is a complete website solution for a mobile bin cleaning service, featur
 
 ```
 BinKind/
-├── index.html                 # Homepage
-├── areas-covered.html         # Service coverage areas
-├── contact.html              # Contact form and information
-├── book-your-clean.html      # Multi-step booking system
+├── index.html                      # Homepage
+├── areas-covered.html              # Service coverage areas
+├── contact.html                    # Contact form and information
+├── book-your-clean.html            # Multi-step booking system
+├── booking-success.html            # Payment success page
+├── booking-failed.html             # Payment failure page
 ├── css/
-│   └── styles.css            # Comprehensive stylesheet
+│   └── styles.css                  # Comprehensive stylesheet
 ├── js/
-│   └── main.js               # All interactive functionality
+│   └── main.js                     # All interactive functionality
+├── netlify/
+│   └── functions/                  # Serverless backend functions
+│       ├── create-payment.js       # Initialize GoCardless payment
+│       ├── payment-callback.js     # Handle payment redirect
+│       ├── send-emails.js          # Email notifications
+│       └── webhook-handler.js      # GoCardless webhooks
 ├── assets/
 │   ├── BinKind Icon Black + Green.png
 │   ├── BinKind Icon White + Green.png
 │   ├── BinKind Logo Black + Green.png
 │   ├── BinKind Logo White + Green.png
 │   └── binkind-van.jpg
-└── README.md
+├── netlify.toml                    # Netlify configuration
+├── package.json                    # Node.js dependencies
+├── .env.example                    # Environment variables template
+├── .gitignore                      # Git ignore file
+├── README.md                       # This file
+├── SETUP_GUIDE.md                  # Detailed setup instructions
+└── TESTING_GUIDE.md                # Testing procedures (Phase 2)
 ```
 
 ## 🚀 Features
@@ -213,25 +232,52 @@ All elements are fully responsive with appropriate mobile navigation and touch-f
 - Responsive design
 - All animations and interactions
 
-### 🔜 Phase 2 (Planned)
+### ✅ Phase 2 (COMPLETE)
 - **GoCardless Integration**:
-  - Direct Debit setup
-  - Payment processing
-  - Recurring payment management
+  - ✅ Direct Debit setup for recurring payments
+  - ✅ One-time payment processing
+  - ✅ Recurring subscription management (every 4 weeks)
+  - ✅ Secure payment redirect flow
+  - ✅ Payment success/failure handling
+  - ✅ Webhook support for payment status updates
 - **Backend/Serverless**:
-  - Netlify Functions
-  - Form submission handling
-  - Booking storage
+  - ✅ Netlify Functions for all backend logic
+  - ✅ Create Payment function (GoCardless initialization)
+  - ✅ Payment Callback function (handles redirects)
+  - ✅ Send Emails function (notifications)
+  - ✅ Webhook Handler function (GoCardless events)
+  - ✅ Secure API key management
+  - ✅ Comprehensive error handling
 - **Email Notifications**:
-  - Customer confirmation emails
-  - Business notification emails
-  - Booking reminders
-- **Calendar Integration**:
-  - Real booking slot management
-  - Availability tracking
-  - Admin dashboard
+  - ✅ Customer confirmation emails (with booking details)
+  - ✅ Business notification emails (to client)
+  - ✅ Detailed booking information in emails
+  - ✅ HTML and plain text email formats
+  - ✅ Recurring payment information in emails
+- **Payment Pages**:
+  - ✅ Booking success page with full details
+  - ✅ Booking failed page with retry options
+  - ✅ Dynamic data display from payment flow
+- **Production Ready**:
+  - ✅ Environment configuration (sandbox/live)
+  - ✅ Comprehensive documentation
+  - ✅ Testing guide for sandbox mode
+  - ✅ Deployment instructions
+
+### 🔮 Future Enhancements (Optional)
+- Admin dashboard for booking management
+- Integration with scheduling software (Squeegee)
+- Real-time availability tracking
+- Customer account portal
+- Automated booking reminders
 
 ## 🛠️ Setup & Installation
+
+### Prerequisites
+
+- Node.js 14+ (for Netlify Functions)
+- A Netlify account
+- A GoCardless account (sign up at https://manage.gocardless.com/)
 
 ### Local Development
 
@@ -241,31 +287,121 @@ All elements are fully responsive with appropriate mobile navigation and touch-f
    cd BinKind
    ```
 
-2. **Open in browser**:
-   Simply open `index.html` in your web browser, or use a local server:
-
+2. **Install dependencies**:
    ```bash
-   # Using Python
-   python -m http.server 8000
-
-   # Using Node.js (http-server)
-   npx http-server
-
-   # Using PHP
-   php -S localhost:8000
+   npm install
    ```
 
-3. **View the site**:
-   Navigate to `http://localhost:8000`
+3. **Set up environment variables**:
+   ```bash
+   cp .env.example .env
+   ```
 
-### Deployment
+   Edit `.env` and add your credentials:
+   ```
+   GOCARDLESS_ACCESS_TOKEN=your_sandbox_token_here
+   GOCARDLESS_ENVIRONMENT=Sandbox
+   CLIENT_EMAIL=charlielfisher@hotmail.com
+   SITE_URL=http://localhost:8888
+   ```
 
-The site is pure HTML/CSS/JavaScript and can be deployed to any static hosting service:
+4. **Install Netlify CLI** (if not already installed):
+   ```bash
+   npm install -g netlify-cli
+   ```
 
-- **Netlify**: Drag and drop the entire folder
-- **Vercel**: Connect GitHub repository
-- **GitHub Pages**: Enable in repository settings
-- **Traditional hosting**: Upload via FTP to web server
+5. **Run local development server**:
+   ```bash
+   netlify dev
+   ```
+
+   This will start a local server at `http://localhost:8888` with Netlify Functions support.
+
+6. **Test the booking flow**:
+   - Navigate to `http://localhost:8888/book-your-clean.html`
+   - Complete the booking form
+   - Test payment flow in GoCardless Sandbox mode
+
+### Deployment to Netlify
+
+#### Method 1: Netlify Dashboard (Recommended)
+
+1. **Create a new Netlify site**:
+   - Go to https://app.netlify.com
+   - Click "Add new site" > "Import an existing project"
+   - Connect your GitHub repository
+   - Select the `BinKind` repository
+
+2. **Configure build settings**:
+   - Build command: (leave empty)
+   - Publish directory: `.`
+   - Functions directory: `netlify/functions`
+
+3. **Set environment variables**:
+   - Go to Site Settings > Environment Variables
+   - Add the following variables:
+     ```
+     GOCARDLESS_ACCESS_TOKEN = your_access_token
+     GOCARDLESS_ENVIRONMENT = Sandbox (or Live for production)
+     CLIENT_EMAIL = charlielfisher@hotmail.com
+     SITE_URL = https://your-site.netlify.app
+     GOCARDLESS_WEBHOOK_SECRET = your_webhook_secret (optional)
+     ```
+
+4. **Deploy**:
+   - Click "Deploy site"
+   - Wait for deployment to complete
+   - Your site will be live at `https://your-site.netlify.app`
+
+#### Method 2: Netlify CLI
+
+```bash
+# Login to Netlify
+netlify login
+
+# Initialize Netlify site
+netlify init
+
+# Deploy to production
+netlify deploy --prod
+```
+
+### GoCardless Setup
+
+1. **Create a GoCardless account**:
+   - Visit https://manage.gocardless.com/signup
+   - Complete account registration
+   - Verify your business details
+
+2. **Get API credentials**:
+   - Navigate to Developers > Access Tokens
+   - Create a new access token for Sandbox mode
+   - Copy the token to your environment variables
+
+3. **Test in Sandbox mode**:
+   - Use the Sandbox token for all testing
+   - GoCardless provides test bank details for sandbox testing
+   - Test both one-time and recurring payments
+
+4. **Go Live**:
+   - When ready for production, create a Live access token
+   - Update environment variables:
+     - `GOCARDLESS_ENVIRONMENT=Live`
+     - `GOCARDLESS_ACCESS_TOKEN=your_live_token`
+   - Test with a small real payment first
+
+5. **Set up webhooks** (optional but recommended):
+   - Go to Developers > Webhooks
+   - Add webhook URL: `https://your-site.netlify.app/.netlify/functions/webhook-handler`
+   - Copy the webhook secret to environment variables
+
+### Alternative Deployment Options
+
+The site can also be deployed to:
+
+- **Vercel**: Connect GitHub repository, add environment variables
+- **AWS Amplify**: Deploy with serverless functions support
+- **Traditional hosting**: Not recommended for Phase 2 (needs serverless functions)
 
 ## 📋 Testing Checklist
 
@@ -341,15 +477,28 @@ Update placeholder contact info in all HTML files:
 - Phone: `07777 777777`
 - Email: `info@binkind.com`
 
-## 🐛 Known Issues / Limitations (Phase 1)
+## 🐛 Known Issues / Limitations
 
-1. **No actual payment processing** - Placeholder only
-2. **No email sending** - Success message is visual only
-3. **No booking persistence** - Data is client-side only
-4. **Calendar doesn't check real availability** - Just blocks weekends and past dates
-5. **Contact form doesn't send emails** - Shows success message only
+### Resolved in Phase 2
+- ✅ **Payment processing** - Now fully integrated with GoCardless
+- ✅ **Email sending** - Notifications sent to customer and business
+- ✅ **Booking persistence** - Data sent to email notifications (manual Squeegee entry required)
 
-All of these are intentional for Phase 1 and will be addressed in Phase 2.
+### Current Limitations
+1. **Contact form doesn't send emails** - Shows success message only (not critical)
+2. **Manual Squeegee entry** - Bookings must be manually added to scheduling software
+3. **Calendar doesn't check real availability** - Blocks weekends and past dates only
+4. **No admin dashboard** - All booking management is manual
+
+### Production Checklist
+Before going live with real payments:
+- [ ] Switch `GOCARDLESS_ENVIRONMENT` to `Live`
+- [ ] Use Live GoCardless access token
+- [ ] Update `CLIENT_EMAIL` to real business email
+- [ ] Update phone number from placeholder `07777 777777`
+- [ ] Test one small real payment
+- [ ] Set up GoCardless webhooks
+- [ ] Configure email service (currently logs only)
 
 ## 📧 Support & Contact
 
