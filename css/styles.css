@@ -1853,7 +1853,7 @@ p {
   /* Hero */
   .hero {
     min-height: auto;
-    padding: var(--spacing-xl) 0;
+    padding: 1rem 0;
   }
 
   .hero h1 {
