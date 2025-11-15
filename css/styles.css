@@ -562,7 +562,8 @@ p {
 
 /* Compact hero for sub-pages */
 .hero-compact {
-  margin-top: 0;
+  margin-top: 70px;
+  padding-top: 0;
 }
 
 .hero-compact .hero-split {
@@ -1294,6 +1295,11 @@ p {
   overflow: hidden;
 }
 
+.bin-selection-card > * {
+  position: relative;
+  z-index: 1;
+}
+
 .bin-selection-card::before {
   content: '';
   position: absolute;
@@ -1304,6 +1310,8 @@ p {
   background: linear-gradient(135deg, var(--primary-green), var(--primary-green-light));
   opacity: 0;
   transition: var(--transition-medium);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .bin-selection-card:hover::before {
