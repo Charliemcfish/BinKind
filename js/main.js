@@ -192,6 +192,11 @@ function initBookingForm() {
       e.preventDefault();
     });
 
+    // Initialize bin displays
+    ['waste', 'food', 'recycling', 'garden'].forEach(binType => {
+      updateBinDisplay(binType);
+    });
+
     // Update progress bar
     updateProgressBar();
   }
@@ -466,6 +471,30 @@ function saveStepData(step) {
 // ============================================
 // FREQUENCY UPDATE
 // ============================================
+function selectFrequency(frequency) {
+  // Update hidden input
+  document.getElementById('frequency').value = frequency;
+
+  // Update button styles
+  document.querySelectorAll('.frequency-btn').forEach(btn => {
+    if (btn.dataset.frequency === frequency) {
+      btn.style.borderColor = '#5b8855';
+      btn.style.backgroundColor = 'rgba(91, 136, 85, 0.05)';
+      btn.style.boxShadow = '0 4px 12px rgba(91, 136, 85, 0.2)';
+    } else {
+      btn.style.borderColor = '#e0e0e0';
+      btn.style.backgroundColor = 'white';
+      btn.style.boxShadow = 'none';
+    }
+  });
+
+  // Hide error if shown
+  hideError('frequencyError');
+
+  // Update frequency info
+  updateFrequencyInfo();
+}
+
 function updateFrequencyInfo() {
   const frequency = document.getElementById('frequency').value;
   const recurringInfo = document.getElementById('recurringInfo');

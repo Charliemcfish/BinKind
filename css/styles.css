@@ -476,13 +476,13 @@ p {
 }
 
 .hero-split {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
   min-height: calc(100vh - 70px);
-  align-items: center;
+  align-items: stretch;
   gap: 0;
   position: relative;
   width: 100%;
+  overflow: hidden;
 }
 
 .hero-content-side {
@@ -494,7 +494,8 @@ p {
   justify-content: center;
   position: relative;
   z-index: 2;
-  clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%);
+  flex: 0 0 50%;
+  clip-path: polygon(0 0, 100% 0, 90% 100%, 0 100%);
 }
 
 .hero-content-side::before {
@@ -548,21 +549,14 @@ p {
 }
 
 .hero-image-side {
-  position: relative;
-  min-height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 45%;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-}
-
-.hero-image-side::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(90deg, var(--primary-green-dark) 0%, transparent 30%);
   z-index: 1;
 }
 
@@ -805,7 +799,7 @@ p {
   width: 90px;
   height: 90px;
   margin: 0 auto var(--spacing-md);
-  background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-dark) 100%);
+  background: transparent;
   border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
@@ -813,6 +807,7 @@ p {
   font-size: 2.5rem;
   box-shadow: var(--shadow-lg);
   transition: var(--transition-bounce);
+  overflow: hidden;
 }
 
 .pricing-card:hover .bin-icon {
@@ -1150,22 +1145,6 @@ p {
   margin: 0 auto;
   padding: var(--spacing-2xl) var(--spacing-md);
   position: relative;
-}
-
-.booking-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url('../assets/binkind-van.jpg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  opacity: 0.03;
-  z-index: -1;
-  pointer-events: none;
 }
 
 .booking-header {
@@ -1837,7 +1816,7 @@ p {
 @media (max-width: 768px) {
   /* Hero Split - Stack on mobile */
   .hero-split {
-    grid-template-columns: 1fr;
+    flex-direction: column;
     min-height: auto;
   }
 
@@ -1845,10 +1824,13 @@ p {
     padding: var(--spacing-2xl) var(--spacing-md);
     min-height: 60vh;
     clip-path: none;
+    flex: 1;
   }
 
   .hero-image-side {
+    position: relative;
     min-height: 40vh;
+    left: 0;
     order: -1;
   }
 
