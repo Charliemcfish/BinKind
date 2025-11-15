@@ -96,20 +96,31 @@ function initMobileMenu() {
 // SCROLL ANIMATIONS
 // ============================================
 function initScrollAnimations() {
-  const animatedElements = document.querySelectorAll('.animate-on-scroll');
+  const animatedElements = document.querySelectorAll('.animate-on-scroll, .animate-left, .animate-right, .animate-scale');
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('animated');
+        // Optionally unobserve after animation to improve performance
+        // observer.unobserve(entry.target);
       }
     });
   }, {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
+    threshold: 0.15,
+    rootMargin: '0px 0px -80px 0px'
   });
 
   animatedElements.forEach(el => observer.observe(el));
+
+  // Add stagger delay to grid items
+  const grids = document.querySelectorAll('.features-grid, .how-it-works-grid, .pricing-grid');
+  grids.forEach(grid => {
+    const cards = grid.querySelectorAll('.feature-card, .step-card, .pricing-card');
+    cards.forEach((card, index) => {
+      card.style.transitionDelay = `${index * 0.1}s`;
+    });
+  });
 }
 
 // ============================================
