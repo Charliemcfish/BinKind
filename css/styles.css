@@ -562,7 +562,7 @@ p {
 
 /* Compact hero for sub-pages */
 .hero-compact {
-  margin-top: 70px;
+  margin-top: 0;
 }
 
 .hero-compact .hero-split {
