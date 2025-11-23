@@ -613,11 +613,40 @@ function updateTotal() {
   const frequency = document.getElementById('frequency')?.value || 'oneoff';
   const priceSet = binPrices[frequency] || binPrices.oneoff;
 
+  // Count total bins
   Object.keys(bookingData.bins).forEach(binType => {
     const quantity = bookingData.bins[binType];
     totalBins += quantity;
-    totalPrice += quantity * priceSet[binType];
   });
+
+  // Check for bundle deals
+  const wasteCount = bookingData.bins.waste || 0;
+  const gardenCount = bookingData.bins.garden || 0;
+  const foodCount = bookingData.bins.food || 0;
+  const recyclingCount = bookingData.bins.recycling || 0;
+
+  const largeBinsCount = wasteCount + gardenCount; // Both are 240L bins
+  const smallBinsCount = foodCount + recyclingCount;
+
+  // Bundle Deal 1: Two large waste bins (waste or garden) for £20 one-off / £10 monthly
+  const hasTwoLargeBins = largeBinsCount === 2 && smallBinsCount === 0;
+
+  // Bundle Deal 2: All bins for £30 one-off / £15 monthly
+  const hasAllBins = wasteCount >= 1 && gardenCount >= 1 && foodCount >= 1 && recyclingCount >= 1;
+
+  if (hasAllBins) {
+    // Apply "all bins" bundle pricing
+    totalPrice = frequency === 'oneoff' ? 30 : 15;
+  } else if (hasTwoLargeBins) {
+    // Apply "two waste bins" bundle pricing
+    totalPrice = frequency === 'oneoff' ? 20 : 10;
+  } else {
+    // Regular pricing
+    Object.keys(bookingData.bins).forEach(binType => {
+      const quantity = bookingData.bins[binType];
+      totalPrice += quantity * priceSet[binType];
+    });
+  }
 
   bookingData.totalBins = totalBins;
   bookingData.totalPrice = totalPrice;
@@ -630,6 +659,37 @@ function updateTotal() {
   }
   if (totalPriceEl) {
     totalPriceEl.textContent = totalPrice.toFixed(2);
+  }
+
+  // Show bundle deal notification if applicable
+  showBundleNotification(hasAllBins, hasTwoLargeBins, frequency);
+}
+
+function showBundleNotification(hasAllBins, hasTwoLargeBins, frequency) {
+  // Remove existing bundle notification if any
+  const existingNotif = document.getElementById('bundleNotification');
+  if (existingNotif) {
+    existingNotif.remove();
+  }
+
+  const totalContainer = document.querySelector('.booking-total');
+  if (!totalContainer) return;
+
+  let message = '';
+  if (hasAllBins) {
+    const price = frequency === 'oneoff' ? '£30' : '£15';
+    message = `🎉 Bundle Deal Applied! All bins for ${price}`;
+  } else if (hasTwoLargeBins) {
+    const price = frequency === 'oneoff' ? '£20' : '£10';
+    message = `🎉 Bundle Deal Applied! Two waste bins for ${price}`;
+  }
+
+  if (message) {
+    const notification = document.createElement('div');
+    notification.id = 'bundleNotification';
+    notification.style.cssText = 'background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border: 2px solid #5b8855; border-radius: 8px; padding: 1rem; margin-top: 1rem; text-align: center; color: #1b5e20; font-weight: 600; font-size: 1.125rem;';
+    notification.textContent = message;
+    totalContainer.parentNode.insertBefore(notification, totalContainer.nextSibling);
   }
 }
 
