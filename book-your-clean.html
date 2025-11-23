@@ -217,12 +217,12 @@
                 </div>
 
                 <div class="bin-selection-grid">
-                    <!-- Waste Wheelie -->
+                    <!-- General Waste Bin -->
                     <div class="bin-selection-card" data-bin="waste">
                         <div class="bin-visual">🗑️</div>
-                        <h3 style="font-size: 1.25rem; margin-bottom: 0.25rem;">Waste Wheelie</h3>
+                        <h3 style="font-size: 1.25rem; margin-bottom: 0.25rem;">General Waste Bin</h3>
                         <p class="bin-size">Up to 240L</p>
-                        <div class="price" id="wastePrice">£12.49</div>
+                        <div class="price" id="wastePrice">£12</div>
                         <p class="price-label" id="wastePriceLabel">(One-Off)</p>
 
                         <div class="quantity-selector">
@@ -232,12 +232,27 @@
                         </div>
                     </div>
 
+                    <!-- Garden Waste Bin -->
+                    <div class="bin-selection-card" data-bin="garden">
+                        <div class="bin-visual">🌿</div>
+                        <h3 style="font-size: 1.25rem; margin-bottom: 0.25rem;">Garden Waste Bin</h3>
+                        <p class="bin-size">Up to 240L</p>
+                        <div class="price" id="gardenPrice">£12</div>
+                        <p class="price-label" id="gardenPriceLabel">(One-Off)</p>
+
+                        <div class="quantity-selector">
+                            <button type="button" class="quantity-btn" onclick="decrementBin('garden')" id="gardenDecrement" disabled>−</button>
+                            <span class="quantity-display" id="gardenQuantity">0</span>
+                            <button type="button" class="quantity-btn" onclick="incrementBin('garden')">+</button>
+                        </div>
+                    </div>
+
                     <!-- Food Caddy -->
                     <div class="bin-selection-card" data-bin="food">
                         <div class="bin-visual">🥫</div>
                         <h3 style="font-size: 1.25rem; margin-bottom: 0.25rem;">Food Caddy</h3>
                         <p class="bin-size">Up to 55L</p>
-                        <div class="price" id="foodPrice">£5.99</div>
+                        <div class="price" id="foodPrice">£3</div>
                         <p class="price-label" id="foodPriceLabel">(One-Off)</p>
 
                         <div class="quantity-selector">
@@ -247,33 +262,18 @@
                         </div>
                     </div>
 
-                    <!-- Recycling Box -->
+                    <!-- Recycling Container -->
                     <div class="bin-selection-card" data-bin="recycling">
                         <div class="bin-visual">♻️</div>
-                        <h3 style="font-size: 1.25rem; margin-bottom: 0.25rem;">Recycling Box</h3>
-                        <p class="bin-size">Up to 55L</p>
-                        <div class="price" id="recyclingPrice">£3.49</div>
+                        <h3 style="font-size: 1.25rem; margin-bottom: 0.25rem;">Recycling Container</h3>
+                        <p class="bin-size">Boxes & Bags</p>
+                        <div class="price" id="recyclingPrice">£3</div>
                         <p class="price-label" id="recyclingPriceLabel">(One-Off)</p>
 
                         <div class="quantity-selector">
                             <button type="button" class="quantity-btn" onclick="decrementBin('recycling')" id="recyclingDecrement" disabled>−</button>
                             <span class="quantity-display" id="recyclingQuantity">0</span>
                             <button type="button" class="quantity-btn" onclick="incrementBin('recycling')">+</button>
-                        </div>
-                    </div>
-
-                    <!-- Garden Wheelie -->
-                    <div class="bin-selection-card" data-bin="garden">
-                        <div class="bin-visual">🌿</div>
-                        <h3 style="font-size: 1.25rem; margin-bottom: 0.25rem;">Garden Wheelie</h3>
-                        <p class="bin-size">Up to 240L</p>
-                        <div class="price" id="gardenPrice">£12.49</div>
-                        <p class="price-label" id="gardenPriceLabel">(One-Off)</p>
-
-                        <div class="quantity-selector">
-                            <button type="button" class="quantity-btn" onclick="decrementBin('garden')" id="gardenDecrement" disabled>−</button>
-                            <span class="quantity-display" id="gardenQuantity">0</span>
-                            <button type="button" class="quantity-btn" onclick="incrementBin('garden')">+</button>
                         </div>
                     </div>
                 </div>
@@ -448,7 +448,7 @@
                 <div class="footer-section">
                     <img src="assets/BinKind Logo White + Green.png" alt="BinKind Logo" class="footer-logo">
                     <p class="footer-tagline">
-                        Professional wheelie bin cleaning service for homes and businesses across Yeovil and Somerset. Eco-friendly, reliable, and affordable.
+                        Clean bins. Kind service. A better environment for everyone. Serving Yeovil and Somerset since 2025.
                     </p>
                 </div>
 
@@ -471,9 +471,9 @@
                             <span><i class="fas fa-phone"></i></span>
                             <span>07777 777777</span>
                         </a>
-                        <a href="mailto:info@binkind.com" class="contact-item">
+                        <a href="mailto:binkindsw@gmail.com" class="contact-item">
                             <span><i class="fas fa-envelope"></i></span>
-                            <span>info@binkind.com</span>
+                            <span>binkindsw@gmail.com</span>
                         </a>
                         <div class="contact-item">
                             <span><i class="fas fa-clock"></i></span>
@@ -484,7 +484,7 @@
             </div>
 
             <div class="footer-bottom">
-                <p>&copy; 2024 BinKind. All rights reserved.</p>
+                <p>&copy; 2025 BinKind. All rights reserved.</p>
             </div>
         </div>
     </footer>

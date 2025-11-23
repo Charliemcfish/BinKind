@@ -34,12 +34,20 @@ let bookingData = {
   selectedDate: null
 };
 
-// Bin pricing
+// Bin pricing - separate rates for one-off and monthly
 const binPrices = {
-  waste: 12.49,
-  food: 5.99,
-  recycling: 3.49,
-  garden: 12.49
+  oneoff: {
+    waste: 12,
+    food: 3,
+    recycling: 3,
+    garden: 12
+  },
+  every4weeks: {
+    waste: 6,
+    food: 2,
+    recycling: 2,
+    garden: 6
+  }
 };
 
 // Calendar state
@@ -518,8 +526,10 @@ function updateBinPriceLabels() {
   if (!frequencyEl) return;
 
   const frequency = frequencyEl.value;
-  const label = frequency === 'every4weeks' ? '(Every 4 Weeks)' : '(One-Off)';
+  const label = frequency === 'every4weeks' ? '(Monthly)' : '(One-Off)';
+  const priceSet = binPrices[frequency] || binPrices.oneoff;
 
+  // Update labels
   const wastePriceLabel = document.getElementById('wastePriceLabel');
   const foodPriceLabel = document.getElementById('foodPriceLabel');
   const recyclingPriceLabel = document.getElementById('recyclingPriceLabel');
@@ -529,6 +539,20 @@ function updateBinPriceLabels() {
   if (foodPriceLabel) foodPriceLabel.textContent = label;
   if (recyclingPriceLabel) recyclingPriceLabel.textContent = label;
   if (gardenPriceLabel) gardenPriceLabel.textContent = label;
+
+  // Update prices
+  const wastePrice = document.getElementById('wastePrice');
+  const foodPrice = document.getElementById('foodPrice');
+  const recyclingPrice = document.getElementById('recyclingPrice');
+  const gardenPrice = document.getElementById('gardenPrice');
+
+  if (wastePrice) wastePrice.textContent = '£' + priceSet.waste;
+  if (foodPrice) foodPrice.textContent = '£' + priceSet.food;
+  if (recyclingPrice) recyclingPrice.textContent = '£' + priceSet.recycling;
+  if (gardenPrice) gardenPrice.textContent = '£' + priceSet.garden;
+
+  // Recalculate total with new prices
+  updateTotal();
 }
 
 // ============================================
@@ -585,10 +609,14 @@ function updateTotal() {
   let totalBins = 0;
   let totalPrice = 0;
 
+  // Get current frequency (default to oneoff if not set)
+  const frequency = document.getElementById('frequency')?.value || 'oneoff';
+  const priceSet = binPrices[frequency] || binPrices.oneoff;
+
   Object.keys(bookingData.bins).forEach(binType => {
     const quantity = bookingData.bins[binType];
     totalBins += quantity;
-    totalPrice += quantity * binPrices[binType];
+    totalPrice += quantity * priceSet[binType];
   });
 
   bookingData.totalBins = totalBins;
@@ -621,10 +649,10 @@ function populateSummary() {
   summaryBinsEl.innerHTML = '';
 
   const binNames = {
-    waste: 'Waste Wheelie (Up to 240L)',
+    waste: 'General Waste Bin (Up to 240L)',
     food: 'Food Caddy (Up to 55L)',
-    recycling: 'Recycling Box (Up to 55L)',
-    garden: 'Garden Wheelie (Up to 240L)'
+    recycling: 'Recycling Container (Boxes & Bags)',
+    garden: 'Garden Waste Bin (Up to 240L)'
   };
 
   const binEmojis = {
@@ -634,10 +662,14 @@ function populateSummary() {
     garden: '🌿'
   };
 
+  // Get price set based on frequency
+  const frequency = bookingData.frequency || 'oneoff';
+  const priceSet = binPrices[frequency] || binPrices.oneoff;
+
   Object.keys(bookingData.bins).forEach(binType => {
     const quantity = bookingData.bins[binType];
     if (quantity > 0) {
-      const price = (quantity * binPrices[binType]).toFixed(2);
+      const price = (quantity * priceSet[binType]).toFixed(2);
       const div = document.createElement('div');
       div.className = 'summary-item';
       div.innerHTML = `
