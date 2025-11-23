@@ -1,0 +1,26 @@
+{
+  "name": "binkind-website",
+  "version": "1.0.0",
+  "description": "BinKind bin cleaning service website with GoCardless payment integration",
+  "main": "index.html",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo 'No build step required'",
+    "test": "echo 'No tests configured'"
+  },
+  "dependencies": {
+    "gocardless-nodejs": "^3.18.0",
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
+  },
+  "keywords": [
+    "bin-cleaning",
+    "gocardless",
+    "netlify",
+    "payment-processing"
+  ],
+  "author": "BinKind",
+  "license": "ISC"
+}

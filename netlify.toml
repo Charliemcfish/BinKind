@@ -1,0 +1,58 @@
+# Netlify Configuration for BinKind Website
+
+[build]
+  # Directory with Netlify Functions
+  functions = "netlify/functions"
+
+  # Publish directory (root of static site)
+  publish = "."
+
+  # Build command (no build needed for static site)
+  command = "echo 'No build step required'"
+
+[functions]
+  # Use esbuild to bundle Node.js dependencies
+  node_bundler = "esbuild"
+
+# Redirect API calls to Netlify Functions
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Success page redirect
+[[redirects]]
+  from = "/booking-success"
+  to = "/booking-success.html"
+  status = 200
+
+# Failure page redirect
+[[redirects]]
+  from = "/booking-failed"
+  to = "/booking-failed.html"
+  status = 200
+
+# Headers for security
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Cache control for static assets
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
