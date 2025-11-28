@@ -746,6 +746,16 @@ function populateSummary() {
 
   // Total
   document.getElementById('summaryTotal').textContent = bookingData.totalPrice.toFixed(2);
+
+  // Update payment method info
+  const paymentMethodInfo = document.getElementById('paymentMethodInfo');
+  if (paymentMethodInfo) {
+    if (bookingData.frequency === 'every4weeks') {
+      paymentMethodInfo.textContent = 'You will set up a Direct Debit mandate for automatic recurring payments.';
+    } else {
+      paymentMethodInfo.textContent = 'You will authorize a one-time Direct Debit payment.';
+    }
+  }
 }
 
 // ============================================
@@ -861,39 +871,69 @@ function nextMonth() {
 // ============================================
 // COMPLETE BOOKING
 // ============================================
-function completeBooking() {
+async function completeBooking() {
   if (!validateStep4()) {
     return;
   }
 
   saveStepData(4);
 
-  // Generate booking reference
-  const bookingRef = 'BK' + Date.now().toString().slice(-8);
+  // Show loading state
+  const completeButton = document.querySelector('[onclick="completeBooking()"]');
+  const originalButtonText = completeButton.innerHTML;
+  completeButton.disabled = true;
+  completeButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
-  // Populate modal
-  document.getElementById('bookingRef').textContent = bookingRef;
-  document.getElementById('modalName').textContent = bookingData.customerName;
+  try {
+    // Prepare booking data for API
+    const bookingPayload = {
+      customerName: bookingData.customerName,
+      email: bookingData.email,
+      streetAddress: bookingData.streetAddress,
+      townCity: bookingData.townCity,
+      postcode: bookingData.postcode,
+      mobilePhone: bookingData.mobilePhone,
+      frequency: bookingData.frequency,
+      councilArea: bookingData.councilArea,
+      bins: bookingData.bins,
+      totalBins: bookingData.totalBins,
+      totalPrice: bookingData.totalPrice,
+      selectedDate: selectedDate.toISOString()
+    };
 
-  const dateStr = selectedDate.toLocaleDateString('en-GB', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-  document.getElementById('modalDate').textContent = dateStr;
+    // Call create-payment API
+    const response = await fetch('/api/create-payment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(bookingPayload)
+    });
 
-  document.getElementById('modalBins').textContent = bookingData.totalBins;
-  document.getElementById('modalTotal').textContent = bookingData.totalPrice.toFixed(2);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to create payment');
+    }
 
-  const frequencyText = bookingData.frequency === 'every4weeks' ?
-    'Every 4 Weeks (Recurring)' : 'One-Off Clean';
-  document.getElementById('modalFrequency').textContent = frequencyText;
+    const result = await response.json();
 
-  document.getElementById('modalEmail').textContent = bookingData.email;
+    // Store booking data and redirect URL for return flow
+    sessionStorage.setItem('bookingData', JSON.stringify(result.bookingData));
+    sessionStorage.setItem('bookingReference', result.bookingReference);
 
-  // Show modal
-  showModal();
+    // Redirect to GoCardless payment page
+    window.location.href = result.redirectUrl;
+
+  } catch (error) {
+    console.error('Error creating payment:', error);
+
+    // Reset button
+    completeButton.disabled = false;
+    completeButton.innerHTML = originalButtonText;
+
+    // Show error message
+    alert('Payment Error: ' + error.message + '\n\nPlease try again or contact us at 07777 777777 if the problem persists.');
+  }
 }
 
 // ============================================
