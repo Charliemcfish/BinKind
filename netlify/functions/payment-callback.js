@@ -12,7 +12,6 @@
  */
 
 const gocardless = require('gocardless-nodejs');
-const constants = gocardless.constants;
 const fetch = require('node-fetch');
 
 exports.handler = async (event, context) => {
@@ -29,9 +28,13 @@ exports.handler = async (event, context) => {
     }
 
     // Initialize GoCardless client
+    const environment = process.env.GOCARDLESS_ENVIRONMENT === 'Live'
+      ? gocardless.constants.Environments.Live
+      : gocardless.constants.Environments.Sandbox;
+
     const client = gocardless(
       process.env.GOCARDLESS_ACCESS_TOKEN,
-      constants.Environments[process.env.GOCARDLESS_ENVIRONMENT || 'Sandbox']
+      environment
     );
 
     // Complete the redirect flow
