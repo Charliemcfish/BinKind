@@ -7,8 +7,8 @@
   # Publish directory (root of static site)
   publish = "."
 
-  # Build command (no build needed for static site)
-  command = "echo 'No build step required'"
+  # Build command - install dependencies for Functions
+  command = "npm install"
 
 [functions]
   # Use esbuild to bundle Node.js dependencies
