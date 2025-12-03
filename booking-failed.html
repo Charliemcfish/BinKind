@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Booking failed - BinKind Bin Cleaning Service">
+    <title>Booking Failed - BinKind</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/BinKind Icon Black + Green.png">
+
+    <style>
+        .failure-container {
+            max-width: 600px;
+            margin: 120px auto 60px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .failure-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 2rem;
+            background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: shake 0.5s ease-out;
+        }
+
+        .failure-icon i {
+            font-size: 3rem;
+            color: white;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+
+        .failure-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .error-message {
+            background: #ffebee;
+            border: 2px solid #d32f2f;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            color: #b71c1c;
+        }
+
+        .info-box {
+            background: #f5f5f5;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .help-section {
+            background: linear-gradient(135deg, #5b8855 0%, #4a7045 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+        }
+
+        .help-section a {
+            color: white;
+            text-decoration: underline;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body style="position: relative; background: #f5f5f5;">
+    <!-- Full Page Background -->
+    <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-image: url('assets/vanhero.png'); background-size: cover; background-position: center; background-attachment: fixed; opacity: 0.03; z-index: -1; pointer-events: none;"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo">
+                <img src="assets/BinKind Logo White + Green.png" alt="BinKind Logo">
+            </a>
+
+            <!-- Desktop Menu -->
+            <div class="navbar-menu">
+                <div class="navbar-links">
+                    <a href="index.html" class="navbar-link">Home</a>
+                    <a href="about.html" class="navbar-link">About</a>
+                    <a href="areas-covered.html" class="navbar-link">Areas Covered</a>
+                    <a href="contact.html" class="navbar-link">Contact</a>
+                </div>
+                <div class="navbar-cta">
+                    <a href="book-your-clean.html" class="btn btn-primary">Book Your Clean</a>
+                </div>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="navbar-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu">
+        <a href="index.html" class="navbar-link">Home</a>
+        <a href="about.html" class="navbar-link">About</a>
+        <a href="areas-covered.html" class="navbar-link">Areas Covered</a>
+        <a href="contact.html" class="navbar-link">Contact</a>
+        <a href="book-your-clean.html" class="btn btn-primary btn-large">Book Your Clean</a>
+    </div>
+
+    <!-- Failure Content -->
+    <div class="failure-container">
+        <div class="failure-icon">
+            <i class="fas fa-times"></i>
+        </div>
+
+        <h1 style="font-size: 2.5rem; margin-bottom: 1rem; color: #1b1b1b;">Payment Unsuccessful</h1>
+        <p style="font-size: 1.125rem; color: #424242; margin-bottom: 2rem;">We couldn't complete your booking</p>
+
+        <div class="failure-card">
+            <div class="error-message">
+                <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>
+                <strong>Payment Failed</strong>
+                <p id="errorDetails" style="margin: 0.5rem 0 0 0;">
+                    Your payment was unsuccessful. Please try again or contact us for assistance.
+                </p>
+            </div>
+
+            <div class="info-box">
+                <h3 style="margin-top: 0; color: #1b1b1b;">What happened?</h3>
+                <p style="color: #424242; line-height: 1.6;">
+                    Your booking could not be completed due to a payment processing issue.
+                    This can happen for several reasons:
+                </p>
+                <ul style="text-align: left; color: #424242; line-height: 1.8;">
+                    <li>Payment was declined by your bank</li>
+                    <li>Payment was cancelled</li>
+                    <li>Connection issue during payment processing</li>
+                    <li>Incorrect payment details</li>
+                </ul>
+            </div>
+
+            <div style="margin: 2rem 0;">
+                <h3 style="color: #1b1b1b;">What should you do?</h3>
+                <div style="text-align: left; margin-top: 1rem;">
+                    <p style="color: #424242; margin-bottom: 1rem;">
+                        <i class="fas fa-check" style="color: #5b8855; margin-right: 0.5rem;"></i>
+                        <strong>Try booking again</strong> - Your information has not been lost
+                    </p>
+                    <p style="color: #424242; margin-bottom: 1rem;">
+                        <i class="fas fa-check" style="color: #5b8855; margin-right: 0.5rem;"></i>
+                        <strong>Check your payment details</strong> - Ensure all information is correct
+                    </p>
+                    <p style="color: #424242; margin-bottom: 1rem;">
+                        <i class="fas fa-check" style="color: #5b8855; margin-right: 0.5rem;"></i>
+                        <strong>Contact your bank</strong> - If the issue persists, check with your bank
+                    </p>
+                </div>
+            </div>
+
+            <div class="help-section">
+                <i class="fas fa-headset" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                <h3 style="margin: 0.5rem 0;">Need Help?</h3>
+                <p style="margin: 0.5rem 0;">We're here to assist you!</p>
+                <p style="margin: 1rem 0 0 0;">
+                    Call us: <a href="tel:07979404342">07979 404342</a><br>
+                    Email: <a href="mailto:binkindsw@gmail.com">binkindsw@gmail.com</a>
+                </p>
+                <p style="margin: 1rem 0 0 0; font-size: 0.9rem;">
+                    Mon-Fri: 8am - 6pm
+                </p>
+            </div>
+        </div>
+
+        <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="book-your-clean.html" class="btn btn-primary">
+                <i class="fas fa-redo" style="margin-right: 0.5rem;"></i>
+                Try Again
+            </a>
+            <a href="contact.html" class="btn btn-secondary">
+                <i class="fas fa-phone" style="margin-right: 0.5rem;"></i>
+                Contact Us
+            </a>
+            <a href="index.html" class="btn btn-secondary">Return Home</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" style="margin-top: 4rem;">
+        <div class="container">
+            <div class="footer-content">
+                <!-- About Section -->
+                <div class="footer-section">
+                    <img src="assets/BinKind Logo White + Green.png" alt="BinKind Logo" class="footer-logo">
+                    <p class="footer-tagline">
+                        Clean bins. Kind service. A better environment for everyone. Serving Yeovil and Somerset since 2025.
+                    </p>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <div class="footer-links">
+                        <a href="index.html" class="footer-link">Home</a>
+                        <a href="about.html" class="footer-link">About</a>
+                        <a href="areas-covered.html" class="footer-link">Areas Covered</a>
+                        <a href="contact.html" class="footer-link">Contact Us</a>
+                        <a href="book-your-clean.html" class="footer-link">Book Now</a>
+                    </div>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <div class="contact-info">
+                        <a href="tel:07979404342" class="contact-item">
+                            <span><i class="fas fa-phone"></i></span>
+                            <span>07979 404342</span>
+                        </a>
+                        <a href="mailto:binkindsw@gmail.com" class="contact-item">
+                            <span><i class="fas fa-envelope"></i></span>
+                            <span>binkindsw@gmail.com</span>
+                        </a>
+                        <div class="contact-item">
+                            <span><i class="fas fa-clock"></i></span>
+                            <span>Mon-Fri: 8am - 6pm</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 BinKind. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/main.js"></script>
+    <script>
+        // Parse URL parameters for error details
+        const params = new URLSearchParams(window.location.search);
+        const errorMessage = params.get('error');
+
+        if (errorMessage) {
+            document.getElementById('errorDetails').textContent = decodeURIComponent(errorMessage);
+        }
+    </script>
+</body>
+</html>
