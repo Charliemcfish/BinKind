@@ -12,7 +12,7 @@
  */
 
 const gocardless = require('gocardless-nodejs');
-const constants = gocardless.constants;
+const constants = require('gocardless-nodejs/constants');
 const fetch = require('node-fetch');
 
 exports.handler = async (event, context) => {
@@ -29,9 +29,13 @@ exports.handler = async (event, context) => {
     }
 
     // Initialize GoCardless client
+    const environment = process.env.GOCARDLESS_ENVIRONMENT === 'Live'
+      ? constants.Environments.Live
+      : constants.Environments.Sandbox;
+
     const client = gocardless(
       process.env.GOCARDLESS_ACCESS_TOKEN,
-      constants.Environments[process.env.GOCARDLESS_ENVIRONMENT || 'Sandbox']
+      environment
     );
 
     // Complete the redirect flow
@@ -80,10 +84,9 @@ exports.handler = async (event, context) => {
           mandate: mandateId
         },
         metadata: {
-          booking_reference: bookingData.bookingReference,
-          customer_name: bookingData.customerName,
-          bins: JSON.stringify(bookingData.bins),
-          cleaning_date: bookingData.selectedDate
+          booking_ref: bookingData.bookingReference,
+          customer: bookingData.customerName,
+          date: bookingData.selectedDate
         }
       });
 
@@ -99,10 +102,9 @@ exports.handler = async (event, context) => {
           mandate: mandateId
         },
         metadata: {
-          booking_reference: bookingData.bookingReference,
-          customer_name: bookingData.customerName,
-          bins: JSON.stringify(bookingData.bins),
-          cleaning_date: bookingData.selectedDate
+          booking_ref: bookingData.bookingReference,
+          customer: bookingData.customerName,
+          date: bookingData.selectedDate
         }
       });
 

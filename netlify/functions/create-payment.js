@@ -12,7 +12,7 @@
  */
 
 const gocardless = require('gocardless-nodejs');
-const constants = gocardless.constants;
+const constants = require('gocardless-nodejs/constants');
 
 // CORS headers for API responses
 const headers = {
@@ -54,7 +54,6 @@ exports.handler = async (event, context) => {
       'postcode',
       'mobilePhone',
       'frequency',
-      'councilArea',
       'totalPrice',
       'selectedDate'
     ];
@@ -84,9 +83,13 @@ exports.handler = async (event, context) => {
     }
 
     // Initialize GoCardless client
+    const environment = process.env.GOCARDLESS_ENVIRONMENT === 'Live'
+      ? constants.Environments.Live
+      : constants.Environments.Sandbox;
+
     const client = gocardless(
       process.env.GOCARDLESS_ACCESS_TOKEN,
-      constants.Environments[process.env.GOCARDLESS_ENVIRONMENT || 'Sandbox']
+      environment
     );
 
     // Generate unique session token for this booking
