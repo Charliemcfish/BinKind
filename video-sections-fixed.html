@@ -1,0 +1,386 @@
+<!-- ========================================
+     SECTION 3B: VIDEO CONTENT SECTIONS WITH PLACEHOLDERS - MOBILE FIXED
+     (Two sections with loading placeholders)
+     ======================================== -->
+
+<style>
+   /* BLOCK 4: Updated Video Content Sections */
+
+/* Container for video sections */
+.containerVideo {
+    max-width: 100%;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+}
+
+.video-content-section {
+    padding: 0;
+    background: #1D1D1D;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Background with overlay */
+.video-content-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://monumental.global/wp-content/uploads/2025/11/DJI_0514-scaled-2.webp');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    opacity: 0.35;
+    z-index: 0;
+}
+
+.video-content-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(29, 29, 29, 0.85) 0%, rgba(29, 29, 29, 0.9) 100%);
+    z-index: 0;
+}
+
+.video-content-wrapper {
+    display: flex;
+    align-items: stretch;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 1;
+    min-height: 700px;
+}
+
+/* Show immediately in Elementor editor */
+.elementor-editor-active .video-content-wrapper,
+body.elementor-editor-active .video-content-wrapper {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+.video-content-wrapper.in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.video-content-wrapper.reversed {
+    flex-direction: row-reverse;
+}
+
+.video-container {
+    flex: 1;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: transparent;
+}
+
+.video-frame {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: transparent;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+}
+
+/* Placeholder image styling */
+.video-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    z-index: 1;
+    transition: opacity 0.5s ease;
+}
+
+.video-placeholder.loaded {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.video-frame iframe {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+    transform: translate(-50%, -50%) scale(1.02);
+    border: none;
+    object-fit: cover;
+    z-index: 2;
+}
+
+.video-frame * {
+    max-width: none !important;
+    max-height: none !important;
+}
+
+.content-container {
+    flex: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.content-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 3.5rem;
+    color: #daa520;
+    margin-bottom: 25px;
+    position: relative;
+    z-index: 1;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -2px;
+    line-height: 1.1;
+}
+
+.content-text {
+    font-size: 1.1rem;
+    line-height: 1.5;
+    color: #ffffff;
+    margin-bottom: 35px;
+}
+
+.content-cta {
+    display: inline-block;
+    padding: 14px 40px;
+    background: #daa520;
+    color: white;
+    text-decoration: none;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.95rem;
+    letter-spacing: 2px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid #daa520;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    border-radius: 50px;
+    font-weight: 600;
+}
+
+.content-cta:hover {
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 20px 40px rgba(218, 165, 32, 0.3);
+}
+
+/* Tablet and Mobile Styles - FIXED */
+@media (max-width: 768px) {
+    .video-content-wrapper,
+    .video-content-wrapper.reversed {
+        flex-direction: column;
+        min-height: auto;
+    }
+
+    .video-container {
+        position: relative;
+        width: 100%;
+        padding-top: 56.25%; /* 16:9 aspect ratio - CHANGED from padding-bottom */
+        height: 0;
+        overflow: visible; /* CHANGED from hidden */
+        background: #000;
+    }
+
+    .video-frame {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        overflow: hidden; /* Keep overflow hidden on the frame */
+    }
+
+    .video-placeholder {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        z-index: 1;
+    }
+
+    .video-frame iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        min-width: 100%;
+        min-height: 100%;
+        transform: none; /* Remove transform on mobile */
+        border: none;
+        z-index: 2;
+        display: block; /* Ensure display is block */
+    }
+
+    .content-container {
+        padding: 40px 30px;
+    }
+
+    .content-title {
+        font-size: 2rem;
+    }
+
+    /* Fix for background attachment on mobile */
+    .video-content-section::before {
+        background-attachment: scroll; /* Fixed doesn't work well on mobile */
+    }
+}
+
+@media (max-width: 480px) {
+    .video-container {
+        padding-top: 56.25%; /* Keep 16:9 ratio */
+        min-height: 250px; /* Minimum height fallback */
+    }
+
+    .video-frame iframe {
+        transform: none;
+    }
+
+    .content-container {
+        padding: 30px 20px;
+    }
+
+    .content-text {
+        font-size: 1rem;
+    }
+
+    .content-cta {
+        padding: 14px 35px;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 375px) {
+    .video-container {
+        min-height: 200px; /* Minimum height for very small screens */
+    }
+
+    .video-frame iframe {
+        transform: none;
+    }
+}
+</style>
+
+<!-- BLOCK 4A: Video Content Section (Left Video, Right Content) -->
+<section class="video-content-section">
+    <div class="containerVideo">
+        <div class="video-content-wrapper" id="videoContent1">
+            <div class="video-container">
+                <div class="video-frame">
+                    <div class="video-placeholder" style="background-image: url('https://monumental.global/wp-content/uploads/2025/11/videoblockplaceholder1.jpg');"></div>
+                    <iframe src="https://player.vimeo.com/video/1132777633?autoplay=1&amp;loop=1&amp;muted=1&amp;background=1&amp;autopause=0&amp;playsinline=1#t=82s" frameborder="0" allow="autoplay; fullscreen" allowfullscreen loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+            <div class="content-container">
+                <div style="padding: 60px 40px">
+                <h2 class="content-title">Redefine Your Leadership</h2>
+                <p class="content-text">In the solitude of success, leaders face their greatest challenges. Monumental provides the confidential sanctuary where influential men navigate transitions, forge authentic connections, and emerge stronger. Monumental's mission is that you become the true, authentic leader you are here to be, at work and home. And with that, unbounded, unlimited life upgrades.</p>
+                <a href="https://monumental.global/the-network/" class="content-cta">Discover More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- BLOCK 4B: Video Content Section (Right Video, Left Content) -->
+<section class="video-content-section">
+    <div class="containerVideo">
+        <div class="video-content-wrapper reversed" id="videoContent2">
+            <div class="video-container">
+                <div class="video-frame">
+                    <div class="video-placeholder" style="background-image: url('https://monumental.global/wp-content/uploads/2025/11/videoblockplaceholder2.jpg');"></div>
+                    <iframe src="https://player.vimeo.com/video/1134739087?autoplay=1&amp;loop=1&amp;muted=1&amp;background=1&amp;autopause=0&amp;playsinline=1#t=45s" frameborder="0" allow="autoplay; fullscreen" allowfullscreen loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+            <div class="content-container">
+                 <div style="padding: 60px 40px">
+                <h2 class="content-title">The Power of Community</h2>
+                <p class="content-text">
+                    Behind every great leader is a story of transformation. Our members don't just survive life's pivotal moments, they leverage them. Through authentic and strategic support, we turn isolation into strength, uncertainty into clarity, and challenges into legacy, defining opportunities.
+                </p>
+                <a href="https://monumental.global/the-network/" class="content-cta">Join The Network</a>
+            </div>
+        </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Check if we're in Elementor editor mode
+    var isElementorEditor = document.body.classList.contains('elementor-editor-active') ||
+                           typeof elementor !== 'undefined';
+
+    if (!isElementorEditor) {
+        // Only run scroll animation on frontend
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in-view');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all video content wrappers
+        document.querySelectorAll('.video-content-wrapper').forEach(el => observer.observe(el));
+    } else {
+        // In editor mode, show everything immediately
+        document.querySelectorAll('.video-content-wrapper').forEach(el => {
+            el.classList.add('in-view');
+        });
+    }
+
+    // Handle placeholder fadeout when video loads
+    document.querySelectorAll('.video-frame iframe').forEach((iframe, index) => {
+        iframe.addEventListener('load', function() {
+            const placeholder = this.parentElement.querySelector('.video-placeholder');
+            if (placeholder) {
+                // Wait a bit to ensure video is actually playing
+                setTimeout(() => {
+                    placeholder.classList.add('loaded');
+                }, 1000);
+            }
+        });
+    });
+
+    // Mobile-specific iframe load check
+    if (window.innerWidth <= 768) {
+        // Force iframes to be visible on mobile
+        document.querySelectorAll('.video-frame iframe').forEach((iframe) => {
+            iframe.style.visibility = 'visible';
+            iframe.style.opacity = '1';
+        });
+    }
+</script>
