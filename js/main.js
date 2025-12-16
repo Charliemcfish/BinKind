@@ -24,7 +24,8 @@ let bookingData = {
     waste: 0,
     food: 0,
     recycling: 0,
-    garden: 0
+    garden: 0,
+    recyclingBag: 0
   },
   totalBins: 0,
   totalPrice: 0,
@@ -39,13 +40,15 @@ const binPrices = {
     waste: 12,
     food: 3,
     recycling: 3,
-    garden: 12
+    garden: 12,
+    recyclingBag: 3
   },
   every4weeks: {
     waste: 6,
     food: 2,
     recycling: 2,
-    garden: 6
+    garden: 6,
+    recyclingBag: 2
   }
 };
 
@@ -200,7 +203,7 @@ function initBookingForm() {
     });
 
     // Initialize bin displays
-    ['waste', 'food', 'recycling', 'garden'].forEach(binType => {
+    ['waste', 'food', 'recycling', 'garden', 'recyclingBag'].forEach(binType => {
       updateBinDisplay(binType);
     });
 
@@ -508,6 +511,9 @@ function updateFrequencyInfo() {
 
   // Update bin price labels
   updateBinPriceLabels();
+
+  // Update bundle prices
+  updateBundlePrices();
 }
 
 function updateBinPriceLabels() {
@@ -523,22 +529,26 @@ function updateBinPriceLabels() {
   const foodPriceLabel = document.getElementById('foodPriceLabel');
   const recyclingPriceLabel = document.getElementById('recyclingPriceLabel');
   const gardenPriceLabel = document.getElementById('gardenPriceLabel');
+  const recyclingBagPriceLabel = document.getElementById('recyclingBagPriceLabel');
 
   if (wastePriceLabel) wastePriceLabel.textContent = label;
   if (foodPriceLabel) foodPriceLabel.textContent = label;
   if (recyclingPriceLabel) recyclingPriceLabel.textContent = label;
   if (gardenPriceLabel) gardenPriceLabel.textContent = label;
+  if (recyclingBagPriceLabel) recyclingBagPriceLabel.textContent = label;
 
   // Update prices
   const wastePrice = document.getElementById('wastePrice');
   const foodPrice = document.getElementById('foodPrice');
   const recyclingPrice = document.getElementById('recyclingPrice');
   const gardenPrice = document.getElementById('gardenPrice');
+  const recyclingBagPrice = document.getElementById('recyclingBagPrice');
 
   if (wastePrice) wastePrice.textContent = '£' + priceSet.waste;
   if (foodPrice) foodPrice.textContent = '£' + priceSet.food;
   if (recyclingPrice) recyclingPrice.textContent = '£' + priceSet.recycling;
   if (gardenPrice) gardenPrice.textContent = '£' + priceSet.garden;
+  if (recyclingBagPrice) recyclingBagPrice.textContent = '£' + priceSet.recyclingBag;
 
   // Recalculate total with new prices
   updateTotal();
@@ -625,7 +635,7 @@ function updateTotal() {
 
   if (hasAllBins) {
     // Apply "all bins" bundle pricing
-    totalPrice = frequency === 'oneoff' ? 30 : 15;
+    totalPrice = frequency === 'oneoff' ? 25 : 15;
   } else if (hasTwoLargeBins) {
     // Apply "two waste bins" bundle pricing
     totalPrice = frequency === 'oneoff' ? 20 : 10;
@@ -666,7 +676,7 @@ function showBundleNotification(hasAllBins, hasTwoLargeBins, frequency) {
 
   let message = '';
   if (hasAllBins) {
-    const price = frequency === 'oneoff' ? '£30' : '£15';
+    const price = frequency === 'oneoff' ? '£25' : '£15';
     message = `🎉 Bundle Deal Applied! All bins for ${price}`;
   } else if (hasTwoLargeBins) {
     const price = frequency === 'oneoff' ? '£20' : '£10';
@@ -701,14 +711,16 @@ function populateSummary() {
     waste: 'General Waste Bin (Up to 240L)',
     food: 'Food Caddy (Up to 55L)',
     recycling: 'Recycling Container (Boxes & Bags)',
-    garden: 'Garden Waste Bin (Up to 240L)'
+    garden: 'Garden Waste Bin (Up to 240L)',
+    recyclingBag: 'Recycling Bag (Bags Only)'
   };
 
   const binEmojis = {
     waste: '🗑️',
     food: '🥫',
     recycling: '♻️',
-    garden: '🌿'
+    garden: '🌿',
+    recyclingBag: '♻️'
   };
 
   // Get price set based on frequency
@@ -920,7 +932,7 @@ async function completeBooking() {
     completeButton.innerHTML = originalButtonText;
 
     // Show error message
-    alert('Payment Error: ' + error.message + '\n\nPlease try again or contact us at 07777 777777 if the problem persists.');
+    alert('Payment Error: ' + error.message + '\n\nPlease try again or contact us at 07494 250556 if the problem persists.');
   }
 }
 
@@ -966,7 +978,7 @@ function bookAnother() {
   document.getElementById('bookingForm').reset();
 
   // Reset bins
-  ['waste', 'food', 'recycling', 'garden'].forEach(binType => {
+  ['waste', 'food', 'recycling', 'garden', 'recyclingBag'].forEach(binType => {
     updateBinDisplay(binType);
     updateCardSelection(binType);
   });
@@ -997,3 +1009,85 @@ document.addEventListener('click', function(e) {
     closeModal();
   }
 });
+
+// ============================================
+// BUNDLE SELECTION
+// ============================================
+function selectBundle(bundleType) {
+  // Reset all bins first
+  bookingData.bins = {
+    waste: 0,
+    food: 0,
+    recycling: 0,
+    garden: 0,
+    recyclingBag: 0
+  };
+
+  // Apply bundle based on type
+  if (bundleType === 'twoBins') {
+    // Two large bins - 1 waste + 1 garden
+    bookingData.bins.waste = 1;
+    bookingData.bins.garden = 1;
+  } else if (bundleType === 'fourBins') {
+    // All four bins
+    bookingData.bins.waste = 1;
+    bookingData.bins.garden = 1;
+    bookingData.bins.food = 1;
+    bookingData.bins.recycling = 1;
+  }
+
+  // Update displays
+  ['waste', 'food', 'recycling', 'garden', 'recyclingBag'].forEach(binType => {
+    updateBinDisplay(binType);
+    updateCardSelection(binType);
+  });
+
+  // Update total
+  updateTotal();
+
+  // Visual feedback
+  document.querySelectorAll('.bundle-btn').forEach(btn => {
+    btn.style.borderColor = 'transparent';
+  });
+  event.target.closest('.bundle-btn').style.borderColor = '#5b8855';
+
+  // Scroll to bins section
+  setTimeout(() => {
+    document.querySelector('.bin-selection-grid').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 300);
+}
+
+// Update bundle deal prices when frequency changes
+function updateBundlePrices() {
+  const frequency = document.getElementById('frequency')?.value || 'oneoff';
+
+  // Two bins bundle
+  const twoBinsPrice = document.getElementById('twoBinsPrice');
+  const twoBinsLabel = document.getElementById('twoBinsLabel');
+  const twoBinsMonthly = document.getElementById('twoBinsMonthly');
+
+  if (twoBinsPrice) {
+    twoBinsPrice.textContent = frequency === 'oneoff' ? '20' : '10';
+  }
+  if (twoBinsLabel) {
+    twoBinsLabel.textContent = frequency === 'oneoff' ? 'one-off' : 'monthly';
+  }
+  if (twoBinsMonthly) {
+    twoBinsMonthly.textContent = frequency === 'oneoff' ? '£10/month' : 'subscription';
+  }
+
+  // Four bins bundle
+  const fourBinsPrice = document.getElementById('fourBinsPrice');
+  const fourBinsLabel = document.getElementById('fourBinsLabel');
+  const fourBinsMonthly = document.getElementById('fourBinsMonthly');
+
+  if (fourBinsPrice) {
+    fourBinsPrice.textContent = frequency === 'oneoff' ? '25' : '15';
+  }
+  if (fourBinsLabel) {
+    fourBinsLabel.textContent = frequency === 'oneoff' ? 'one-off' : 'monthly';
+  }
+  if (fourBinsMonthly) {
+    fourBinsMonthly.textContent = frequency === 'oneoff' ? '£15/month' : 'subscription';
+  }
+}

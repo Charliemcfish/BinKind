@@ -108,7 +108,7 @@ exports.handler = async (event, context) => {
     })).toString('base64');
 
     // Determine success and failure redirect URLs
-    const siteUrl = process.env.SITE_URL || 'http://localhost:8888';
+    const siteUrl = process.env.SITE_URL || 'https://binkind.co.uk';
     const successRedirectUrl = `${siteUrl}/api/payment-callback?session_token=${sessionToken}&booking_data=${encodedBooking}`;
     const failureRedirectUrl = `${siteUrl}/booking-failed.html`;
 

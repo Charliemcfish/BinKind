@@ -7,7 +7,6 @@
       }
 
       .cls-2 {
-        fill: #fff;
         opacity: .4;
       }
     </style>

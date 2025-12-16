@@ -328,7 +328,7 @@ p {
   left: 0;
   right: 0;
   z-index: 1000;
-  background-color: rgba(27, 27, 27, 0.95);
+  background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   padding: var(--spacing-sm) 0;
   transition: var(--transition-medium);
@@ -366,7 +366,7 @@ p {
 }
 
 .navbar-link {
-  color: var(--white);
+  color: var(--primary-dark);
   font-weight: 500;
   position: relative;
   transition: var(--transition-fast);
@@ -415,7 +415,7 @@ p {
 .navbar-toggle span {
   width: 25px;
   height: 3px;
-  background-color: var(--white);
+  background-color: var(--primary-dark);
   transition: var(--transition-fast);
   border-radius: 2px;
 }
@@ -439,7 +439,7 @@ p {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(27, 27, 27, 0.98);
+  background-color: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(10px);
   z-index: 999;
   display: flex;

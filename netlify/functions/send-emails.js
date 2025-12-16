@@ -133,7 +133,7 @@ Your payment has been processed successfully.
 `}
 
 NEED TO CANCEL OR REBOOK?
-Call us at: 07777 777777
+Call us at: 07494 250556
 Email: binkindsw@gmail.com
 
 We'll see you on ${dateFormatted}!

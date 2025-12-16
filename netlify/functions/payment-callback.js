@@ -113,7 +113,7 @@ exports.handler = async (event, context) => {
 
     // Send confirmation emails
     try {
-      const emailResponse = await fetch(`${process.env.SITE_URL || 'http://localhost:8888'}/api/send-emails`, {
+      const emailResponse = await fetch(`${process.env.SITE_URL || 'https://binkind.co.uk'}/api/send-emails', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -135,7 +135,7 @@ exports.handler = async (event, context) => {
     }
 
     // Prepare success page URL with booking details
-    const successUrl = new URL('/booking-success.html', process.env.SITE_URL || 'http://localhost:8888');
+    const successUrl = new URL('/booking-success.html', process.env.SITE_URL || 'https://binkind.co.uk');
     successUrl.searchParams.append('ref', bookingData.bookingReference);
     successUrl.searchParams.append('name', bookingData.customerName);
     successUrl.searchParams.append('email', bookingData.email);
@@ -158,7 +158,7 @@ exports.handler = async (event, context) => {
     console.error('Error in payment callback:', error);
 
     // Redirect to failure page
-    const failureUrl = new URL('/booking-failed.html', process.env.SITE_URL || 'http://localhost:8888');
+    const failureUrl = new URL('/booking-failed.html', process.env.SITE_URL || 'https://binkind.co.uk');
     failureUrl.searchParams.append('error', error.message || 'Payment processing failed');
 
     return {
