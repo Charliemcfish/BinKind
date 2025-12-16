@@ -113,7 +113,7 @@ exports.handler = async (event, context) => {
 
     // Send confirmation emails
     try {
-      const emailResponse = await fetch(`${process.env.SITE_URL || 'https://binkind.co.uk'}/api/send-emails', {
+      const emailResponse = await fetch(`${process.env.SITE_URL || 'https://binkind.co.uk'}/api/send-emails`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
