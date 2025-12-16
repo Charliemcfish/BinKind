@@ -31,7 +31,8 @@ function formatBookingForEmail(bookingData) {
     waste: 'General Waste Bin (Up to 240L)',
     food: 'Food Caddy (Up to 55L)',
     recycling: 'Recycling Container (Boxes & Bags)',
-    garden: 'Garden Waste Bin (Up to 240L)'
+    garden: 'Garden Waste Bin (Up to 240L)',
+    recyclingBag: 'Recycling Bag (Bags Only)'
   };
 
   let binsList = '';
