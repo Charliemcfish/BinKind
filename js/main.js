@@ -5,6 +5,13 @@
 // ============================================
 // GLOBAL STATE
 // ============================================
+
+// FIRST-TIME DISCOUNT TOGGLE
+// Set this to true to enable 20% off first-time discount
+// Set this to false to disable the discount
+const FIRST_TIME_DISCOUNT_ENABLED = true;
+const FIRST_TIME_DISCOUNT_PERCENTAGE = 20;
+
 let currentStep = 1;
 let bookingData = {
   // Step 1
@@ -43,7 +50,7 @@ const binPrices = {
     garden: 12,
     recyclingBag: 3
   },
-  every4weeks: {
+  every6weeks: {
     waste: 6,
     food: 2,
     recycling: 2,
@@ -141,8 +148,6 @@ function initContactForm() {
 
   if (contactForm) {
     contactForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-
       // Validate form
       const name = document.getElementById('name').value.trim();
       const email = document.getElementById('email').value.trim();
@@ -174,18 +179,11 @@ function initContactForm() {
         hideError('messageError');
       }
 
-      if (isValid) {
-        // Show success message
-        contactForm.style.display = 'none';
-        document.getElementById('contactFormSuccess').style.display = 'block';
-
-        // Reset form after 3 seconds
-        setTimeout(() => {
-          contactForm.reset();
-          contactForm.style.display = 'block';
-          document.getElementById('contactFormSuccess').style.display = 'none';
-        }, 5000);
+      // If validation fails, prevent submission
+      if (!isValid) {
+        e.preventDefault();
       }
+      // If valid, allow Netlify Forms to handle submission (don't prevent default)
     });
   }
 }
@@ -503,7 +501,7 @@ function updateFrequencyInfo() {
 
   const frequency = frequencyEl.value;
 
-  if (frequency === 'every4weeks') {
+  if (frequency === 'every6weeks') {
     recurringInfo.style.display = 'block';
   } else {
     recurringInfo.style.display = 'none';
@@ -521,7 +519,7 @@ function updateBinPriceLabels() {
   if (!frequencyEl) return;
 
   const frequency = frequencyEl.value;
-  const label = frequency === 'every4weeks' ? '(Monthly)' : '(One-Off)';
+  const label = frequency === 'every6weeks' ? '(Every 6 Weeks)' : '(One-Off)';
   const priceSet = binPrices[frequency] || binPrices.oneoff;
 
   // Update labels
@@ -537,18 +535,43 @@ function updateBinPriceLabels() {
   if (gardenPriceLabel) gardenPriceLabel.textContent = label;
   if (recyclingBagPriceLabel) recyclingBagPriceLabel.textContent = label;
 
-  // Update prices
+  // Update prices with discount if enabled
   const wastePrice = document.getElementById('wastePrice');
   const foodPrice = document.getElementById('foodPrice');
   const recyclingPrice = document.getElementById('recyclingPrice');
   const gardenPrice = document.getElementById('gardenPrice');
   const recyclingBagPrice = document.getElementById('recyclingBagPrice');
 
-  if (wastePrice) wastePrice.textContent = '£' + priceSet.waste;
-  if (foodPrice) foodPrice.textContent = '£' + priceSet.food;
-  if (recyclingPrice) recyclingPrice.textContent = '£' + priceSet.recycling;
-  if (gardenPrice) gardenPrice.textContent = '£' + priceSet.garden;
-  if (recyclingBagPrice) recyclingBagPrice.textContent = '£' + priceSet.recyclingBag;
+  // Get price containers for styling
+  const wastePriceContainer = document.getElementById('wastePriceContainer');
+  const foodPriceContainer = document.getElementById('foodPriceContainer');
+  const recyclingPriceContainer = document.getElementById('recyclingPriceContainer');
+  const gardenPriceContainer = document.getElementById('gardenPriceContainer');
+  const recyclingBagPriceContainer = document.getElementById('recyclingBagPriceContainer');
+
+  // Function to update price display with discount
+  function updatePriceDisplay(priceElement, priceContainer, originalPrice) {
+    if (!priceElement || !priceContainer) return;
+
+    if (FIRST_TIME_DISCOUNT_ENABLED) {
+      const discountedPrice = originalPrice * (1 - FIRST_TIME_DISCOUNT_PERCENTAGE / 100);
+      priceContainer.innerHTML = `
+        <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; flex-wrap: wrap;">
+          <span style="text-decoration: line-through; color: #9e9e9e; font-size: 1.25rem;">£${originalPrice}</span>
+          <span style="color: #5b8855; font-size: 1.75rem; font-weight: 800;">£${discountedPrice.toFixed(2)}</span>
+          <span style="color: #4caf50; font-size: 0.85rem; font-weight: 600; background: #e8f5e9; padding: 0.25rem 0.5rem; border-radius: 4px;">20% OFF</span>
+        </div>
+      `;
+    } else {
+      priceContainer.innerHTML = `<div class="price">£${originalPrice}</div>`;
+    }
+  }
+
+  updatePriceDisplay(wastePrice, wastePriceContainer, priceSet.waste);
+  updatePriceDisplay(foodPrice, foodPriceContainer, priceSet.food);
+  updatePriceDisplay(recyclingPrice, recyclingPriceContainer, priceSet.recycling);
+  updatePriceDisplay(gardenPrice, gardenPriceContainer, priceSet.garden);
+  updatePriceDisplay(recyclingBagPrice, recyclingBagPriceContainer, priceSet.recyclingBag);
 
   // Recalculate total with new prices
   updateTotal();
@@ -623,9 +646,10 @@ function updateTotal() {
   const gardenCount = bookingData.bins.garden || 0;
   const foodCount = bookingData.bins.food || 0;
   const recyclingCount = bookingData.bins.recycling || 0;
+  const recyclingBagCount = bookingData.bins.recyclingBag || 0;
 
   const largeBinsCount = wasteCount + gardenCount; // Both are 240L bins
-  const smallBinsCount = foodCount + recyclingCount;
+  const smallBinsCount = foodCount + recyclingCount + recyclingBagCount;
 
   // Bundle Deal 1: Two large waste bins (waste or garden) for £20 one-off / £10 monthly
   const hasTwoLargeBins = largeBinsCount === 2 && smallBinsCount === 0;
@@ -633,18 +657,31 @@ function updateTotal() {
   // Bundle Deal 2: All bins for £30 one-off / £15 monthly
   const hasAllBins = wasteCount >= 1 && gardenCount >= 1 && foodCount >= 1 && recyclingCount >= 1;
 
+  // Check if we can apply stacked bundle deals (e.g., 2 waste + 2 garden = 2x bundle deal)
+  const twoBinBundlePrice = frequency === 'oneoff' ? 20 : 10;
+  const numOfTwoBinBundles = Math.floor(largeBinsCount / 2);
+  const canStackBundles = largeBinsCount >= 4 && largeBinsCount % 2 === 0 && smallBinsCount === 0;
+
   if (hasAllBins) {
     // Apply "all bins" bundle pricing
     totalPrice = frequency === 'oneoff' ? 25 : 15;
+  } else if (canStackBundles) {
+    // Stack multiple 2-bin bundles (e.g., 4 large bins = 2x £20 or 2x £10)
+    totalPrice = numOfTwoBinBundles * twoBinBundlePrice;
   } else if (hasTwoLargeBins) {
     // Apply "two waste bins" bundle pricing
-    totalPrice = frequency === 'oneoff' ? 20 : 10;
+    totalPrice = twoBinBundlePrice;
   } else {
     // Regular pricing
     Object.keys(bookingData.bins).forEach(binType => {
       const quantity = bookingData.bins[binType];
       totalPrice += quantity * priceSet[binType];
     });
+  }
+
+  // Apply first-time discount if enabled
+  if (FIRST_TIME_DISCOUNT_ENABLED) {
+    totalPrice = totalPrice * (1 - FIRST_TIME_DISCOUNT_PERCENTAGE / 100);
   }
 
   bookingData.totalBins = totalBins;
@@ -742,7 +779,7 @@ function populateSummary() {
   });
 
   // Frequency
-  const frequencyText = bookingData.frequency === 'every4weeks' ? 'Every 4 Weeks (Recurring)' : 'One-Off Clean';
+  const frequencyText = bookingData.frequency === 'every6weeks' ? 'Every 6 Weeks (Recurring)' : 'One-Off Clean';
   document.getElementById('summaryFrequency').textContent = frequencyText;
 
   // Total
@@ -751,7 +788,7 @@ function populateSummary() {
   // Update payment method info
   const paymentMethodInfo = document.getElementById('paymentMethodInfo');
   if (paymentMethodInfo) {
-    if (bookingData.frequency === 'every4weeks') {
+    if (bookingData.frequency === 'every6weeks') {
       paymentMethodInfo.textContent = 'You will set up a Direct Debit mandate for automatic recurring payments.';
     } else {
       paymentMethodInfo.textContent = 'You will authorize a one-time Direct Debit payment.';
@@ -1029,11 +1066,12 @@ function selectBundle(bundleType) {
     bookingData.bins.waste = 1;
     bookingData.bins.garden = 1;
   } else if (bundleType === 'fourBins') {
-    // All four bins
+    // All bins including recycling bag
     bookingData.bins.waste = 1;
     bookingData.bins.garden = 1;
     bookingData.bins.food = 1;
     bookingData.bins.recycling = 1;
+    bookingData.bins.recyclingBag = 1;
   }
 
   // Update displays

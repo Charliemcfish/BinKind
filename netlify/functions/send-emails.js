@@ -186,14 +186,41 @@ exports.handler = async (event, context) => {
     const clientEmailContent = generateClientEmail(bookingData, paymentInfo);
     const customerEmailContent = generateCustomerEmail(bookingData);
 
-    // In a production environment, you would send these emails via:
-    // - SendGrid API
-    // - Mailgun API
-    // - AWS SES
-    // - Postmark API
-    // etc.
+    // Submit booking to Netlify Forms for email notification
+    // This will trigger Netlify to send email notifications to configured addresses
+    const formData = new URLSearchParams();
+    formData.append('form-name', 'booking-notification');
+    formData.append('booking-reference', bookingData.bookingReference);
+    formData.append('customer-name', bookingData.customerName);
+    formData.append('customer-email', bookingData.email);
+    formData.append('customer-phone', bookingData.mobilePhone);
+    formData.append('customer-address', `${bookingData.streetAddress}, ${bookingData.townCity}, ${bookingData.postcode}`);
+    formData.append('booking-date', bookingData.selectedDate);
+    formData.append('frequency', bookingData.frequency === 'every4weeks' ? 'Every 4 Weeks (Recurring)' : 'One-Off Cleaning');
+    formData.append('total-bins', bookingData.totalBins);
+    formData.append('total-price', `£${bookingData.totalPrice.toFixed(2)}`);
+    formData.append('payment-id', paymentInfo.paymentId || 'N/A');
+    formData.append('subscription-id', paymentInfo.subscriptionId || 'N/A');
+    formData.append('client-email-content', clientEmailContent);
+    formData.append('customer-email-content', customerEmailContent);
 
-    // For now, we'll log them and return success
+    try {
+      // Submit to Netlify Forms
+      const netlifyResponse = await fetch(`${process.env.SITE_URL || 'https://binkind.co.uk'}/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: formData.toString()
+      });
+
+      console.log('Booking notification submitted to Netlify Forms');
+    } catch (netlifyError) {
+      console.error('Error submitting to Netlify Forms:', netlifyError);
+      // Continue anyway - payment was successful
+    }
+
+    // Also log for debugging
     console.log('=== CLIENT EMAIL ===');
     console.log('To:', process.env.CLIENT_EMAIL || 'charlielfisher@hotmail.com');
     console.log('Subject: New Booking - BinKind Cleaning');
@@ -202,27 +229,6 @@ exports.handler = async (event, context) => {
     console.log('To:', bookingData.email);
     console.log('Subject: Booking Confirmation - BinKind');
     console.log(customerEmailContent);
-
-    // TODO: Implement actual email sending
-    // Example with SendGrid:
-    /*
-    const sgMail = require('@sendgrid/mail');
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-    await sgMail.send({
-      to: process.env.CLIENT_EMAIL,
-      from: 'bookings@binkind.com',
-      subject: 'New Booking - BinKind Cleaning',
-      text: clientEmailContent
-    });
-
-    await sgMail.send({
-      to: bookingData.email,
-      from: 'bookings@binkind.com',
-      subject: 'Booking Confirmation - BinKind',
-      text: customerEmailContent
-    });
-    */
 
     // For development: Return email content in response
     return {
