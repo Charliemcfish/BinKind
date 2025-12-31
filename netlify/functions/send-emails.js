@@ -1,19 +1,15 @@
 /**
- * BinKind - Send Emails Function
+ * BinKind - Send Emails Function using Resend
  *
- * This Netlify Function sends confirmation emails to both:
- * 1. The client (business owner) - detailed booking information
- * 2. The customer - friendly confirmation email
+ * This Netlify Function sends confirmation emails using Resend API
+ * 1. Client (business owner) - detailed booking information
+ * 2. Customer - friendly confirmation email
  *
- * NOTE: This implementation uses Netlify Forms for email delivery.
- * In production, you may want to use a dedicated email service like:
- * - SendGrid
- * - Mailgun
- * - AWS SES
- * - Postmark
- *
- * For now, this will log the emails and you should configure Netlify Form
- * notifications to receive them.
+ * Setup Required:
+ * 1. Sign up at https://resend.com (free: 3,000 emails/month)
+ * 2. Verify your domain OR use resend's test domain
+ * 3. Get API key from Resend dashboard
+ * 4. Add RESEND_API_KEY to Netlify environment variables
  */
 
 const CORS_HEADERS = {
@@ -51,7 +47,7 @@ function formatBookingForEmail(bookingData) {
  */
 function generateClientEmail(bookingData, paymentInfo) {
   const binsList = formatBookingForEmail(bookingData);
-  const isRecurring = bookingData.frequency === 'every4weeks';
+  const isRecurring = bookingData.frequency === 'every6weeks';
   const paymentStatus = isRecurring ? 'Confirmed (Recurring Subscription)' : 'Confirmed (One-time Payment)';
 
   const dateFormatted = new Date(bookingData.selectedDate).toLocaleDateString('en-GB', {
@@ -72,7 +68,7 @@ Address: ${bookingData.streetAddress}, ${bookingData.townCity}, ${bookingData.po
 
 CLEANING DETAILS:
 Date: ${dateFormatted}
-Frequency: ${isRecurring ? 'Every 4 Weeks (Recurring)' : 'One-Off Cleaning'}
+Frequency: ${isRecurring ? 'Every 6 Weeks (Recurring)' : 'One-Off Cleaning'}
 Council Area: ${bookingData.councilArea}
 
 BINS SELECTED:
@@ -81,7 +77,7 @@ TOTAL BINS: ${bookingData.totalBins}
 TOTAL PAYMENT: £${bookingData.totalPrice.toFixed(2)}
 
 PAYMENT STATUS: ${paymentStatus}
-${isRecurring ? `\nRECURRING: Customer will be automatically charged £${bookingData.totalPrice.toFixed(2)} every 4 weeks via Direct Debit.` : ''}
+${isRecurring ? `\nRECURRING: Customer will be automatically charged £${bookingData.totalPrice.toFixed(2)} every 6 weeks via Direct Debit.` : ''}
 
 BOOKING REFERENCE: ${bookingData.bookingReference}
 
@@ -99,7 +95,7 @@ ACTION REQUIRED: This booking needs to be manually added to Squeegee.
  */
 function generateCustomerEmail(bookingData) {
   const binsList = formatBookingForEmail(bookingData);
-  const isRecurring = bookingData.frequency === 'every4weeks';
+  const isRecurring = bookingData.frequency === 'every6weeks';
 
   const dateFormatted = new Date(bookingData.selectedDate).toLocaleDateString('en-GB', {
     weekday: 'long',
@@ -126,7 +122,7 @@ Total: £${bookingData.totalPrice.toFixed(2)}
 ${isRecurring ? `
 PAYMENT DETAILS:
 Your first payment of £${bookingData.totalPrice.toFixed(2)} has been processed via Direct Debit.
-You'll be automatically charged £${bookingData.totalPrice.toFixed(2)} every 4 weeks for your regular bin cleaning service.
+You'll be automatically charged £${bookingData.totalPrice.toFixed(2)} every 6 weeks for your regular bin cleaning service.
 ` : `
 PAYMENT DETAILS:
 Payment: £${bookingData.totalPrice.toFixed(2)} (One-time payment)
@@ -186,70 +182,78 @@ exports.handler = async (event, context) => {
     const clientEmailContent = generateClientEmail(bookingData, paymentInfo);
     const customerEmailContent = generateCustomerEmail(bookingData);
 
-    // Submit booking to Netlify Forms for email notification
-    // This will trigger Netlify to send email notifications to configured addresses
-    const formData = new URLSearchParams();
-    formData.append('form-name', 'booking-notification');
-    formData.append('booking-reference', bookingData.bookingReference);
-    formData.append('customer-name', bookingData.customerName);
-    formData.append('customer-email', bookingData.email);
-    formData.append('customer-phone', bookingData.mobilePhone);
-    formData.append('customer-address', `${bookingData.streetAddress}, ${bookingData.townCity}, ${bookingData.postcode}`);
-    formData.append('booking-date', bookingData.selectedDate);
-    formData.append('frequency', bookingData.frequency === 'every4weeks' ? 'Every 4 Weeks (Recurring)' : 'One-Off Cleaning');
-    formData.append('total-bins', bookingData.totalBins);
-    formData.append('total-price', `£${bookingData.totalPrice.toFixed(2)}`);
-    formData.append('payment-id', paymentInfo.paymentId || 'N/A');
-    formData.append('subscription-id', paymentInfo.subscriptionId || 'N/A');
-    formData.append('client-email-content', clientEmailContent);
-    formData.append('customer-email-content', customerEmailContent);
+    // Check if Resend API key is configured
+    if (!process.env.RESEND_API_KEY) {
+      console.error('RESEND_API_KEY not configured');
+      console.log('=== CLIENT EMAIL ===');
+      console.log(clientEmailContent);
+      console.log('\n=== CUSTOMER EMAIL ===');
+      console.log(customerEmailContent);
 
-    try {
-      // Submit to Netlify Forms
-      const netlifyResponse = await fetch(`${process.env.SITE_URL || 'https://binkind.co.uk'}/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: formData.toString()
-      });
-
-      console.log('Booking notification submitted to Netlify Forms');
-    } catch (netlifyError) {
-      console.error('Error submitting to Netlify Forms:', netlifyError);
-      // Continue anyway - payment was successful
+      return {
+        statusCode: 500,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({
+          error: 'Email service not configured. Please contact support.',
+          debug: 'RESEND_API_KEY environment variable not set'
+        })
+      };
     }
 
-    // Also log for debugging
-    console.log('=== CLIENT EMAIL ===');
-    console.log('To:', process.env.CLIENT_EMAIL || 'charlielfisher@hotmail.com');
-    console.log('Subject: New Booking - BinKind Cleaning');
-    console.log(clientEmailContent);
-    console.log('\n=== CUSTOMER EMAIL ===');
-    console.log('To:', bookingData.email);
-    console.log('Subject: Booking Confirmation - BinKind');
-    console.log(customerEmailContent);
+    // Send emails using Resend API
+    const clientEmail = process.env.CLIENT_EMAIL || 'charlielfisher@hotmail.com';
+    const fromEmail = process.env.FROM_EMAIL || 'onboarding@resend.dev'; // Use your verified domain
 
-    // For development: Return email content in response
+    // Send email to client (business owner)
+    const clientResponse = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: fromEmail,
+        to: clientEmail,
+        subject: `New Booking - ${bookingData.bookingReference}`,
+        text: clientEmailContent
+      })
+    });
+
+    if (!clientResponse.ok) {
+      const error = await clientResponse.text();
+      console.error('Failed to send client email:', error);
+      throw new Error('Failed to send client notification email');
+    }
+
+    // Send confirmation email to customer
+    const customerResponse = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: fromEmail,
+        to: bookingData.email,
+        subject: 'Booking Confirmation - BinKind',
+        text: customerEmailContent
+      })
+    });
+
+    if (!customerResponse.ok) {
+      const error = await customerResponse.text();
+      console.error('Failed to send customer email:', error);
+      // Don't fail the whole request if customer email fails
+    }
+
+    console.log('Emails sent successfully');
+
     return {
       statusCode: 200,
       headers: CORS_HEADERS,
       body: JSON.stringify({
         success: true,
-        message: 'Emails queued for sending',
-        // Include email content in development mode
-        emails: process.env.GOCARDLESS_ENVIRONMENT === 'Sandbox' ? {
-          client: {
-            to: process.env.CLIENT_EMAIL || 'charlielfisher@hotmail.com',
-            subject: 'New Booking - BinKind Cleaning',
-            content: clientEmailContent
-          },
-          customer: {
-            to: bookingData.email,
-            subject: 'Booking Confirmation - BinKind',
-            content: customerEmailContent
-          }
-        } : undefined
+        message: 'Emails sent successfully'
       })
     };
 
@@ -261,7 +265,7 @@ exports.handler = async (event, context) => {
       headers: CORS_HEADERS,
       body: JSON.stringify({
         error: 'Failed to send emails',
-        details: process.env.GOCARDLESS_ENVIRONMENT === 'Sandbox' ? error.message : undefined
+        details: error.message
       })
     };
   }
