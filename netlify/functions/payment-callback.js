@@ -72,14 +72,14 @@ exports.handler = async (event, context) => {
     let subscriptionId = null;
 
     // Create payment or subscription based on frequency
-    if (bookingData.frequency === 'every4weeks') {
-      // Create recurring subscription (every 4 weeks)
+    if (bookingData.frequency === 'every6weeks') {
+      // Create recurring subscription (every 6 weeks)
       const subscription = await client.subscriptions.create({
         amount: amountInPence,
         currency: 'GBP',
-        name: 'BinKind Bin Cleaning - Every 4 Weeks',
+        name: 'BinKind Bin Cleaning - Every 6 Weeks',
         interval_unit: 'weekly',
-        interval: 4,
+        interval: 6,
         links: {
           mandate: mandateId
         },
@@ -143,7 +143,7 @@ exports.handler = async (event, context) => {
     successUrl.searchParams.append('bins', bookingData.totalBins);
     successUrl.searchParams.append('total', bookingData.totalPrice);
     successUrl.searchParams.append('frequency', bookingData.frequency);
-    successUrl.searchParams.append('payment_type', bookingData.frequency === 'every4weeks' ? 'subscription' : 'one-time');
+    successUrl.searchParams.append('payment_type', bookingData.frequency === 'every6weeks' ? 'subscription' : 'one-time');
 
     // Redirect to success page
     return {

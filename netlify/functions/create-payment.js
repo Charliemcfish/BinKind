@@ -114,7 +114,7 @@ exports.handler = async (event, context) => {
 
     // Create redirect flow for customer to authorize payment
     const redirectFlow = await client.redirectFlows.create({
-      description: `BinKind Bin Cleaning Service - ${bookingData.frequency === 'every4weeks' ? 'Recurring' : 'One-time'}`,
+      description: `BinKind Bin Cleaning Service - ${bookingData.frequency === 'every6weeks' ? 'Recurring' : 'One-time'}`,
       session_token: sessionToken,
       success_redirect_url: successRedirectUrl,
       prefilled_customer: {

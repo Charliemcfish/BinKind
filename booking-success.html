@@ -292,7 +292,7 @@
         document.getElementById('totalAmount').textContent = '£' + (parseFloat(params.get('total')) || 0).toFixed(2);
 
         const frequency = params.get('frequency');
-        const frequencyText = frequency === 'every4weeks' ? 'Every 4 Weeks (Recurring)' : 'One-Off Clean';
+        const frequencyText = frequency === 'every6weeks' ? 'Every 6 Weeks (Recurring)' : 'One-Off Clean';
         document.getElementById('frequency').textContent = frequencyText;
     </script>
 </body>
