@@ -38,7 +38,7 @@ let bookingData = {
   totalPrice: 0,
 
   // Step 4
-  selectedDate: null
+  collectionDay: null
 };
 
 // Bin pricing - separate rates for one-off and monthly
@@ -59,9 +59,8 @@ const binPrices = {
   }
 };
 
-// Calendar state
-let currentCalendarDate = new Date();
-let selectedDate = null;
+// Collection day state
+let selectedCollectionDay = null;
 
 // ============================================
 // INITIALIZATION
@@ -71,7 +70,6 @@ document.addEventListener('DOMContentLoaded', function() {
   initScrollAnimations();
   initContactForm();
   initBookingForm();
-  initCalendar();
 });
 
 // ============================================
@@ -401,12 +399,12 @@ function validateStep3() {
 function validateStep4() {
   let isValid = true;
 
-  // Check if date is selected
-  if (!selectedDate) {
-    document.getElementById('dateError').style.display = 'block';
+  // Check if collection day is selected
+  if (!selectedCollectionDay) {
+    document.getElementById('collectionDayError').style.display = 'block';
     isValid = false;
   } else {
-    document.getElementById('dateError').style.display = 'none';
+    document.getElementById('collectionDayError').style.display = 'none';
   }
 
   // Check terms agreement
@@ -461,7 +459,7 @@ function saveStepData(step) {
       // Bins are already saved in real-time
       break;
     case 4:
-      bookingData.selectedDate = selectedDate;
+      bookingData.collectionDay = selectedCollectionDay;
       break;
   }
 }
@@ -797,113 +795,31 @@ function populateSummary() {
 }
 
 // ============================================
-// CALENDAR
+// COLLECTION DAY SELECTION
 // ============================================
-function initCalendar() {
-  const calendarDays = document.getElementById('calendarDays');
-  if (calendarDays) {
-    renderCalendar();
-  }
-}
+function selectCollectionDay(day) {
+  selectedCollectionDay = day;
 
-function renderCalendar() {
-  const year = currentCalendarDate.getFullYear();
-  const month = currentCalendarDate.getMonth();
+  // Update hidden input
+  document.getElementById('collectionDay').value = day;
 
-  // Update month header
-  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                      'July', 'August', 'September', 'October', 'November', 'December'];
-  document.getElementById('calendarMonth').textContent = `${monthNames[month]} ${year}`;
-
-  // Get first day of month (0 = Sunday, 1 = Monday, etc.)
-  const firstDay = new Date(year, month, 1).getDay();
-  // Adjust so Monday = 0
-  const adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;
-
-  // Get last day of month
-  const lastDate = new Date(year, month + 1, 0).getDate();
-
-  // Clear calendar
-  const calendarDays = document.getElementById('calendarDays');
-  calendarDays.innerHTML = '';
-
-  // Add empty cells for days before month starts
-  for (let i = 0; i < adjustedFirstDay; i++) {
-    const emptyDiv = document.createElement('div');
-    calendarDays.appendChild(emptyDiv);
-  }
-
-  // Add days of month
-  const today = new Date();
-  const twoDaysFromNow = new Date(today);
-  twoDaysFromNow.setDate(today.getDate() + 2);
-
-  for (let day = 1; day <= lastDate; day++) {
-    const date = new Date(year, month, day);
-    const dayOfWeek = date.getDay();
-
-    const dayDiv = document.createElement('div');
-    dayDiv.className = 'calendar-day';
-    dayDiv.textContent = day;
-
-    // Check if weekend (Saturday = 6, Sunday = 0)
-    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-
-    // Check if in past or within 2 days
-    const isPastOrTooSoon = date < twoDaysFromNow;
-
-    // Disable if weekend or too soon
-    if (isWeekend || isPastOrTooSoon) {
-      dayDiv.classList.add('disabled');
+  // Update button styles
+  document.querySelectorAll('.collection-day-btn').forEach(btn => {
+    if (btn.dataset.day === day) {
+      btn.style.borderColor = '#5b8855';
+      btn.style.backgroundColor = 'rgba(91, 136, 85, 0.05)';
+      btn.style.boxShadow = '0 4px 12px rgba(91, 136, 85, 0.2)';
     } else {
-      // Check if this is the selected date
-      if (selectedDate &&
-          selectedDate.getDate() === day &&
-          selectedDate.getMonth() === month &&
-          selectedDate.getFullYear() === year) {
-        dayDiv.classList.add('selected');
-      }
-
-      // Add click handler
-      dayDiv.addEventListener('click', function() {
-        selectDate(date);
-      });
+      btn.style.borderColor = '#e0e0e0';
+      btn.style.backgroundColor = 'white';
+      btn.style.boxShadow = 'none';
     }
-
-    // Mark today
-    if (date.toDateString() === today.toDateString()) {
-      dayDiv.classList.add('today');
-    }
-
-    calendarDays.appendChild(dayDiv);
-  }
-}
-
-function selectDate(date) {
-  selectedDate = date;
-  renderCalendar();
-
-  // Show selected date
-  const dateStr = date.toLocaleDateString('en-GB', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
   });
 
-  document.getElementById('selectedDateDisplay').style.display = 'block';
-  document.getElementById('selectedDateText').textContent = dateStr;
-  document.getElementById('dateError').style.display = 'none';
-}
-
-function previousMonth() {
-  currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
-  renderCalendar();
-}
-
-function nextMonth() {
-  currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
-  renderCalendar();
+  // Show selected day
+  document.getElementById('selectedDayDisplay').style.display = 'block';
+  document.getElementById('selectedDayText').textContent = day;
+  document.getElementById('collectionDayError').style.display = 'none';
 }
 
 // ============================================
@@ -935,7 +851,7 @@ async function completeBooking() {
       bins: bookingData.bins,
       totalBins: bookingData.totalBins,
       totalPrice: bookingData.totalPrice,
-      selectedDate: selectedDate.toISOString()
+      collectionDay: selectedCollectionDay
     };
 
     // Call create-payment API
@@ -1008,7 +924,7 @@ function bookAnother() {
     },
     totalBins: 0,
     totalPrice: 0,
-    selectedDate: null
+    collectionDay: null
   };
 
   // Reset form inputs
@@ -1022,11 +938,16 @@ function bookAnother() {
 
   updateTotal();
 
-  // Reset calendar
-  selectedDate = null;
-  currentCalendarDate = new Date();
-  renderCalendar();
-  document.getElementById('selectedDateDisplay').style.display = 'none';
+  // Reset collection day selection
+  selectedCollectionDay = null;
+  document.querySelectorAll('.collection-day-btn').forEach(btn => {
+    btn.style.borderColor = '#e0e0e0';
+    btn.style.backgroundColor = 'white';
+    btn.style.boxShadow = 'none';
+  });
+  if (document.getElementById('selectedDayDisplay')) {
+    document.getElementById('selectedDayDisplay').style.display = 'none';
+  }
 
   // Go to step 1
   showStep(1);

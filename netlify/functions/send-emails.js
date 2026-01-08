@@ -50,13 +50,6 @@ function generateClientEmail(bookingData, paymentInfo) {
   const isRecurring = bookingData.frequency === 'every6weeks';
   const paymentStatus = isRecurring ? 'Confirmed (Recurring Subscription)' : 'Confirmed (One-time Payment)';
 
-  const dateFormatted = new Date(bookingData.selectedDate).toLocaleDateString('en-GB', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-
   return `
 NEW BOOKING RECEIVED - BinKind Cleaning
 
@@ -67,9 +60,8 @@ Phone: ${bookingData.mobilePhone}
 Address: ${bookingData.streetAddress}, ${bookingData.townCity}, ${bookingData.postcode}
 
 CLEANING DETAILS:
-Date: ${dateFormatted}
+Council Collection Day: ${bookingData.collectionDay}
 Frequency: ${isRecurring ? 'Every 6 Weeks (Recurring)' : 'One-Off Cleaning'}
-Council Area: ${bookingData.councilArea}
 
 BINS SELECTED:
 ${binsList}
@@ -97,45 +89,55 @@ function generateCustomerEmail(bookingData) {
   const binsList = formatBookingForEmail(bookingData);
   const isRecurring = bookingData.frequency === 'every6weeks';
 
-  const dateFormatted = new Date(bookingData.selectedDate).toLocaleDateString('en-GB', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-
   return `
-Hi ${bookingData.customerName.split(' ')[0]},
-
 Thank you for booking with BinKind!
 
-Your bin cleaning has been confirmed for ${dateFormatted}.
+We've received your booking and scheduled your bin cleaning based on your council collection day.
 
-BOOKING SUMMARY:
-Address: ${bookingData.streetAddress}, ${bookingData.townCity}, ${bookingData.postcode}
-Date: ${dateFormatted}
+HOW OUR SCHEDULING WORKS
+
+We clean bins within 24 hours of your bin collection and always endeavour to clean on the collection day, depending on our routes and operational conditions.
+
+You'll receive a confirmation message once your service date has been scheduled.
+
+BOOKING SUMMARY
+
+Address:
+${bookingData.streetAddress}, ${bookingData.townCity}, ${bookingData.postcode}
+
+Council Collection Day:
+${bookingData.collectionDay}
+
+Service Window:
+Within 24 hours of collection
 
 Bins:
 ${binsList}
 Total: £${bookingData.totalPrice.toFixed(2)}
 
-${isRecurring ? `
-PAYMENT DETAILS:
-Your first payment of £${bookingData.totalPrice.toFixed(2)} has been processed via Direct Debit.
-You'll be automatically charged £${bookingData.totalPrice.toFixed(2)} every 6 weeks for your regular bin cleaning service.
-` : `
-PAYMENT DETAILS:
-Payment: £${bookingData.totalPrice.toFixed(2)} (One-time payment)
-Your payment has been processed successfully.
-`}
+IMPORTANT – PLEASE READ
 
-NEED TO CANCEL OR REBOOK?
-Call us at: 07494 250556
-Email: binkindsw@gmail.com
+✔ Bins must be empty
+✔ Bins must be left out and accessible after collection
 
-We'll see you on ${dateFormatted}!
+If bins are not left out after collection, we may be unable to clean them.
 
-Best regards,
+PAYMENT DETAILS
+
+${isRecurring ? `Your first payment of £${bookingData.totalPrice.toFixed(2)} has been successfully processed via Direct Debit.
+You'll be automatically charged £${bookingData.totalPrice.toFixed(2)} every 6 weeks for your regular bin cleaning service.` : `Your payment of £${bookingData.totalPrice.toFixed(2)} has been successfully processed via Direct Debit.`}
+
+NEED TO CANCEL OR MAKE A CHANGE?
+
+📞 07494 250556
+✉️ binkindsw@gmail.com
+
+If you need to change your collection day, please contact us as soon as possible.
+
+Thank you for choosing BinKind
+Reliable, hygienic bin cleaning—without the hassle.
+
+Kind Regards,
 The BinKind Team
 
 ---

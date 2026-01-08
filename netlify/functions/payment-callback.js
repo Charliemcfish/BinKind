@@ -86,7 +86,7 @@ exports.handler = async (event, context) => {
         metadata: {
           booking_ref: bookingData.bookingReference,
           customer: bookingData.customerName,
-          date: bookingData.selectedDate
+          collectionDay: bookingData.collectionDay
         }
       });
 
@@ -104,7 +104,7 @@ exports.handler = async (event, context) => {
         metadata: {
           booking_ref: bookingData.bookingReference,
           customer: bookingData.customerName,
-          date: bookingData.selectedDate
+          collectionDay: bookingData.collectionDay
         }
       });
 
@@ -139,7 +139,7 @@ exports.handler = async (event, context) => {
     successUrl.searchParams.append('ref', bookingData.bookingReference);
     successUrl.searchParams.append('name', bookingData.customerName);
     successUrl.searchParams.append('email', bookingData.email);
-    successUrl.searchParams.append('date', bookingData.selectedDate);
+    successUrl.searchParams.append('date', bookingData.collectionDay);
     successUrl.searchParams.append('bins', bookingData.totalBins);
     successUrl.searchParams.append('total', bookingData.totalPrice);
     successUrl.searchParams.append('frequency', bookingData.frequency);

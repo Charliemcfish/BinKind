@@ -55,7 +55,7 @@ exports.handler = async (event, context) => {
       'mobilePhone',
       'frequency',
       'totalPrice',
-      'selectedDate'
+      'collectionDay'
     ];
 
     for (const field of requiredFields) {
