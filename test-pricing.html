@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BinKind Pricing Test Suite</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #1b5e20;
+            text-align: center;
+        }
+        .test-container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+        }
+        .test-section h2 {
+            color: #5b8855;
+            border-bottom: 2px solid #5b8855;
+            padding-bottom: 10px;
+        }
+        .test-case {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 15px;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            align-items: center;
+        }
+        .test-case.passed {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+        }
+        .test-case.failed {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+        }
+        .test-case-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 15px;
+            padding: 12px;
+            margin-bottom: 12px;
+            font-weight: bold;
+            background: #5b8855;
+            color: white;
+            border-radius: 6px;
+        }
+        .bins-description {
+            font-weight: 500;
+        }
+        .expected, .actual {
+            text-align: center;
+        }
+        .status {
+            text-align: center;
+            font-weight: bold;
+        }
+        .passed .status { color: #4caf50; }
+        .failed .status { color: #f44336; }
+        .summary {
+            background: linear-gradient(135deg, #5b8855 0%, #4a6f45 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .summary h3 {
+            margin: 0 0 10px 0;
+        }
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .summary-stat {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 6px;
+        }
+        .summary-stat .number {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .summary-stat .label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        .note {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 BinKind Pricing Test Suite</h1>
+
+    <div class="note">
+        <strong>Note:</strong> All tests include the 20% first-time discount. Bundle prices shown are pre-discount prices.
+        <br><strong>Base Prices (One-Off):</strong> Large Bins = £12, Food Caddy = £3, Recycling = £3
+        <br><strong>Base Prices (Recurring):</strong> Large Bins = £6, Food Caddy = £2, Recycling = £2
+    </div>
+
+    <div id="summary" class="summary">
+        <h3>Test Results</h3>
+        <div class="summary-stats">
+            <div class="summary-stat">
+                <div class="number" id="totalTests">0</div>
+                <div class="label">Total Tests</div>
+            </div>
+            <div class="summary-stat">
+                <div class="number" id="passedTests" style="color: #4caf50;">0</div>
+                <div class="label">Passed</div>
+            </div>
+            <div class="summary-stat">
+                <div class="number" id="failedTests" style="color: #f44336;">0</div>
+                <div class="label">Failed</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <!-- One-Off Frequency Tests -->
+        <div class="test-section">
+            <h2>One-Off Clean Pricing Tests</h2>
+            <div class="test-case-header">
+                <div>Bin Configuration</div>
+                <div>Expected Price</div>
+                <div>Actual Price</div>
+                <div>Status</div>
+            </div>
+            <div id="oneOffTests"></div>
+        </div>
+
+        <!-- Recurring Frequency Tests -->
+        <div class="test-section">
+            <h2>Recurring (Every 6 Weeks) Pricing Tests</h2>
+            <div class="test-case-header">
+                <div>Bin Configuration</div>
+                <div>Expected Price</div>
+                <div>Actual Price</div>
+                <div>Status</div>
+            </div>
+            <div id="recurringTests"></div>
+        </div>
+    </div>
+
+    <script>
+        // Base pricing structure
+        const binPrices = {
+            oneoff: {
+                waste: 12,
+                food: 3,
+                recycling: 3,
+                garden: 12,
+                recyclingBag: 3
+            },
+            every6weeks: {
+                waste: 6,
+                food: 2,
+                recycling: 2,
+                garden: 6,
+                recyclingBag: 2
+            }
+        };
+
+        const FIRST_TIME_DISCOUNT_ENABLED = true;
+        const FIRST_TIME_DISCOUNT_PERCENTAGE = 20;
+
+        // Calculate price using the same logic as main.js
+        function calculatePrice(bins, frequency) {
+            let totalPrice = 0;
+            const priceSet = binPrices[frequency];
+
+            const wasteCount = bins.waste || 0;
+            const gardenCount = bins.garden || 0;
+            const foodCount = bins.food || 0;
+            const recyclingCount = bins.recycling || 0;
+            const recyclingBagCount = bins.recyclingBag || 0;
+
+            const largeBinsCount = wasteCount + gardenCount;
+            const smallBinsCount = foodCount + recyclingCount + recyclingBagCount;
+
+            const hasTwoLargeBins = largeBinsCount === 2 && smallBinsCount === 0;
+            const hasAllBins = wasteCount >= 1 && gardenCount >= 1 && foodCount >= 1 && recyclingCount >= 1;
+            const twoBinBundlePrice = frequency === 'oneoff' ? 20 : 10;
+            const numOfTwoBinBundles = Math.floor(largeBinsCount / 2);
+            const canStackBundles = largeBinsCount >= 4 && largeBinsCount % 2 === 0 && smallBinsCount === 0;
+
+            if (hasAllBins) {
+                totalPrice = frequency === 'oneoff' ? 25 : 15;
+                const extraWaste = Math.max(0, wasteCount - 1);
+                const extraGarden = Math.max(0, gardenCount - 1);
+                const extraFood = Math.max(0, foodCount - 1);
+                const extraRecycling = Math.max(0, recyclingCount - 1);
+
+                totalPrice += (extraWaste * priceSet.waste);
+                totalPrice += (extraGarden * priceSet.garden);
+                totalPrice += (extraFood * priceSet.food);
+                totalPrice += (extraRecycling * priceSet.recycling);
+                totalPrice += (recyclingBagCount * priceSet.recyclingBag);
+
+            } else if (canStackBundles) {
+                totalPrice = numOfTwoBinBundles * twoBinBundlePrice;
+
+            } else if (hasTwoLargeBins) {
+                totalPrice = twoBinBundlePrice;
+
+            } else if (largeBinsCount >= 2) {
+                const bundledLargeBins = Math.floor(largeBinsCount / 2) * 2;
+                const extraLargeBins = largeBinsCount - bundledLargeBins;
+
+                totalPrice = Math.floor(largeBinsCount / 2) * twoBinBundlePrice;
+                totalPrice += (extraLargeBins * priceSet.waste);
+                totalPrice += (smallBinsCount * priceSet.food);
+
+                totalPrice -= (smallBinsCount * priceSet.food);
+                totalPrice += (foodCount * priceSet.food);
+                totalPrice += (recyclingCount * priceSet.recycling);
+                totalPrice += (recyclingBagCount * priceSet.recyclingBag);
+
+            } else {
+                Object.keys(bins).forEach(binType => {
+                    const quantity = bins[binType] || 0;
+                    totalPrice += quantity * priceSet[binType];
+                });
+            }
+
+            if (FIRST_TIME_DISCOUNT_ENABLED) {
+                totalPrice = totalPrice * (1 - FIRST_TIME_DISCOUNT_PERCENTAGE / 100);
+            }
+
+            return totalPrice;
+        }
+
+        // Test cases for One-Off
+        const oneOffTestCases = [
+            // Basic single bins
+            { bins: { waste: 1, garden: 0, food: 0, recycling: 0, recyclingBag: 0 }, expected: 9.60, description: "1 Waste Bin" },
+            { bins: { waste: 0, garden: 1, food: 0, recycling: 0, recyclingBag: 0 }, expected: 9.60, description: "1 Garden Bin" },
+            { bins: { waste: 0, garden: 0, food: 1, recycling: 0, recyclingBag: 0 }, expected: 2.40, description: "1 Food Caddy" },
+            { bins: { waste: 0, garden: 0, food: 0, recycling: 1, recyclingBag: 0 }, expected: 2.40, description: "1 Recycling Container" },
+            { bins: { waste: 0, garden: 0, food: 0, recycling: 0, recyclingBag: 1 }, expected: 2.40, description: "1 Recycling Bag" },
+
+            // Two large bins bundle (£20 → £16 with 20% discount)
+            { bins: { waste: 2, garden: 0, food: 0, recycling: 0, recyclingBag: 0 }, expected: 16.00, description: "2 Waste Bins (Bundle)" },
+            { bins: { waste: 0, garden: 2, food: 0, recycling: 0, recyclingBag: 0 }, expected: 16.00, description: "2 Garden Bins (Bundle)" },
+            { bins: { waste: 1, garden: 1, food: 0, recycling: 0, recyclingBag: 0 }, expected: 16.00, description: "1 Waste + 1 Garden (Bundle)" },
+
+            // Bundle + extra bins - THE CRITICAL TEST CASE
+            { bins: { waste: 2, garden: 0, food: 1, recycling: 0, recyclingBag: 0 }, expected: 18.40, description: "2 Waste + 1 Food (Bundle + Extra)" },
+            { bins: { waste: 1, garden: 1, food: 1, recycling: 0, recyclingBag: 0 }, expected: 18.40, description: "1 Waste + 1 Garden + 1 Food (Bundle + Extra)" },
+            { bins: { waste: 2, garden: 0, food: 0, recycling: 1, recyclingBag: 0 }, expected: 18.40, description: "2 Waste + 1 Recycling (Bundle + Extra)" },
+            { bins: { waste: 2, garden: 0, food: 1, recycling: 1, recyclingBag: 0 }, expected: 20.80, description: "2 Waste + 1 Food + 1 Recycling" },
+
+            // Three large bins (2 bundled + 1 extra)
+            { bins: { waste: 3, garden: 0, food: 0, recycling: 0, recyclingBag: 0 }, expected: 25.60, description: "3 Waste Bins (Bundle + 1 Extra)" },
+            { bins: { waste: 2, garden: 1, food: 0, recycling: 0, recyclingBag: 0 }, expected: 25.60, description: "2 Waste + 1 Garden (Bundle + 1 Extra)" },
+
+            // Four large bins (2x bundle)
+            { bins: { waste: 4, garden: 0, food: 0, recycling: 0, recyclingBag: 0 }, expected: 32.00, description: "4 Waste Bins (2x Bundle)" },
+            { bins: { waste: 2, garden: 2, food: 0, recycling: 0, recyclingBag: 0 }, expected: 32.00, description: "2 Waste + 2 Garden (2x Bundle)" },
+
+            // All bins bundle (£25 → £20 with 20% discount)
+            { bins: { waste: 1, garden: 1, food: 1, recycling: 1, recyclingBag: 0 }, expected: 20.00, description: "All 4 Main Bins (All Bins Bundle)" },
+            { bins: { waste: 1, garden: 1, food: 1, recycling: 1, recyclingBag: 1 }, expected: 22.40, description: "All Bins + Recycling Bag" },
+
+            // All bins bundle + extras
+            { bins: { waste: 2, garden: 1, food: 1, recycling: 1, recyclingBag: 0 }, expected: 29.60, description: "All Bins Bundle + 1 Extra Waste" },
+            { bins: { waste: 1, garden: 1, food: 2, recycling: 1, recyclingBag: 0 }, expected: 22.40, description: "All Bins Bundle + 1 Extra Food" },
+
+            // No bundles apply
+            { bins: { waste: 1, garden: 0, food: 1, recycling: 0, recyclingBag: 0 }, expected: 12.00, description: "1 Waste + 1 Food (No Bundle)" },
+            { bins: { waste: 1, garden: 0, food: 1, recycling: 1, recyclingBag: 0 }, expected: 14.40, description: "1 Waste + 1 Food + 1 Recycling (No Bundle)" },
+            { bins: { waste: 0, garden: 0, food: 2, recycling: 1, recyclingBag: 0 }, expected: 7.20, description: "2 Food + 1 Recycling (No Bundle)" },
+        ];
+
+        // Test cases for Recurring
+        const recurringTestCases = [
+            // Basic single bins
+            { bins: { waste: 1, garden: 0, food: 0, recycling: 0, recyclingBag: 0 }, expected: 4.80, description: "1 Waste Bin" },
+            { bins: { waste: 0, garden: 1, food: 0, recycling: 0, recyclingBag: 0 }, expected: 4.80, description: "1 Garden Bin" },
+            { bins: { waste: 0, garden: 0, food: 1, recycling: 0, recyclingBag: 0 }, expected: 1.60, description: "1 Food Caddy" },
+            { bins: { waste: 0, garden: 0, food: 0, recycling: 1, recyclingBag: 0 }, expected: 1.60, description: "1 Recycling Container" },
+
+            // Two large bins bundle (£10 → £8 with 20% discount)
+            { bins: { waste: 2, garden: 0, food: 0, recycling: 0, recyclingBag: 0 }, expected: 8.00, description: "2 Waste Bins (Bundle)" },
+            { bins: { waste: 0, garden: 2, food: 0, recycling: 0, recyclingBag: 0 }, expected: 8.00, description: "2 Garden Bins (Bundle)" },
+            { bins: { waste: 1, garden: 1, food: 0, recycling: 0, recyclingBag: 0 }, expected: 8.00, description: "1 Waste + 1 Garden (Bundle)" },
+
+            // Bundle + extra bins - THE CRITICAL TEST CASE FOR RECURRING
+            { bins: { waste: 2, garden: 0, food: 1, recycling: 0, recyclingBag: 0 }, expected: 9.60, description: "2 Waste + 1 Food (Bundle + Extra)" },
+            { bins: { waste: 1, garden: 1, food: 1, recycling: 0, recyclingBag: 0 }, expected: 9.60, description: "1 Waste + 1 Garden + 1 Food (Bundle + Extra)" },
+            { bins: { waste: 2, garden: 0, food: 0, recycling: 1, recyclingBag: 0 }, expected: 9.60, description: "2 Waste + 1 Recycling (Bundle + Extra)" },
+
+            // Three large bins (2 bundled + 1 extra)
+            { bins: { waste: 3, garden: 0, food: 0, recycling: 0, recyclingBag: 0 }, expected: 12.80, description: "3 Waste Bins (Bundle + 1 Extra)" },
+
+            // Four large bins (2x bundle)
+            { bins: { waste: 4, garden: 0, food: 0, recycling: 0, recyclingBag: 0 }, expected: 16.00, description: "4 Waste Bins (2x Bundle)" },
+
+            // All bins bundle (£15 → £12 with 20% discount)
+            { bins: { waste: 1, garden: 1, food: 1, recycling: 1, recyclingBag: 0 }, expected: 12.00, description: "All 4 Main Bins (All Bins Bundle)" },
+            { bins: { waste: 1, garden: 1, food: 1, recycling: 1, recyclingBag: 1 }, expected: 13.60, description: "All Bins + Recycling Bag" },
+
+            // No bundles apply
+            { bins: { waste: 1, garden: 0, food: 1, recycling: 0, recyclingBag: 0 }, expected: 6.40, description: "1 Waste + 1 Food (No Bundle)" },
+            { bins: { waste: 0, garden: 0, food: 2, recycling: 1, recyclingBag: 0 }, expected: 4.80, description: "2 Food + 1 Recycling (No Bundle)" },
+        ];
+
+        function runTests(testCases, frequency, containerId) {
+            let passed = 0;
+            let failed = 0;
+            const container = document.getElementById(containerId);
+
+            testCases.forEach(test => {
+                const actual = calculatePrice(test.bins, frequency);
+                const isPassed = Math.abs(actual - test.expected) < 0.01;
+
+                if (isPassed) passed++;
+                else failed++;
+
+                const testCase = document.createElement('div');
+                testCase.className = `test-case ${isPassed ? 'passed' : 'failed'}`;
+                testCase.innerHTML = `
+                    <div class="bins-description">${test.description}</div>
+                    <div class="expected">£${test.expected.toFixed(2)}</div>
+                    <div class="actual">£${actual.toFixed(2)}</div>
+                    <div class="status">${isPassed ? '✓ PASS' : '✗ FAIL'}</div>
+                `;
+                container.appendChild(testCase);
+            });
+
+            return { passed, failed };
+        }
+
+        // Run all tests
+        const oneOffResults = runTests(oneOffTestCases, 'oneoff', 'oneOffTests');
+        const recurringResults = runTests(recurringTestCases, 'every6weeks', 'recurringTests');
+
+        // Update summary
+        const totalPassed = oneOffResults.passed + recurringResults.passed;
+        const totalFailed = oneOffResults.failed + recurringResults.failed;
+        const totalTests = totalPassed + totalFailed;
+
+        document.getElementById('totalTests').textContent = totalTests;
+        document.getElementById('passedTests').textContent = totalPassed;
+        document.getElementById('failedTests').textContent = totalFailed;
+
+        // Change summary background based on results
+        if (totalFailed === 0) {
+            document.getElementById('summary').style.background = 'linear-gradient(135deg, #4caf50 0%, #2e7d32 100%)';
+        } else {
+            document.getElementById('summary').style.background = 'linear-gradient(135deg, #f44336 0%, #c62828 100%)';
+        }
+    </script>
+</body>
+</html>

@@ -652,7 +652,7 @@ function updateTotal() {
   // Bundle Deal 1: Two large waste bins (waste or garden) for £20 one-off / £10 monthly
   const hasTwoLargeBins = largeBinsCount === 2 && smallBinsCount === 0;
 
-  // Bundle Deal 2: All bins for £30 one-off / £15 monthly
+  // Bundle Deal 2: All bins for £25 one-off / £15 monthly (at least 1 of each type)
   const hasAllBins = wasteCount >= 1 && gardenCount >= 1 && foodCount >= 1 && recyclingCount >= 1;
 
   // Check if we can apply stacked bundle deals (e.g., 2 waste + 2 garden = 2x bundle deal)
@@ -660,17 +660,53 @@ function updateTotal() {
   const numOfTwoBinBundles = Math.floor(largeBinsCount / 2);
   const canStackBundles = largeBinsCount >= 4 && largeBinsCount % 2 === 0 && smallBinsCount === 0;
 
+  let bundleApplied = false;
+
   if (hasAllBins) {
-    // Apply "all bins" bundle pricing
+    // Apply "all bins" bundle pricing (1 waste + 1 garden + 1 food + 1 recycling)
     totalPrice = frequency === 'oneoff' ? 25 : 15;
+    bundleApplied = true;
+
+    // Add extra bins beyond the bundle
+    const extraWaste = Math.max(0, wasteCount - 1);
+    const extraGarden = Math.max(0, gardenCount - 1);
+    const extraFood = Math.max(0, foodCount - 1);
+    const extraRecycling = Math.max(0, recyclingCount - 1);
+
+    totalPrice += (extraWaste * priceSet.waste);
+    totalPrice += (extraGarden * priceSet.garden);
+    totalPrice += (extraFood * priceSet.food);
+    totalPrice += (extraRecycling * priceSet.recycling);
+    totalPrice += (recyclingBagCount * priceSet.recyclingBag);
+
   } else if (canStackBundles) {
     // Stack multiple 2-bin bundles (e.g., 4 large bins = 2x £20 or 2x £10)
     totalPrice = numOfTwoBinBundles * twoBinBundlePrice;
+    bundleApplied = true;
+
   } else if (hasTwoLargeBins) {
     // Apply "two waste bins" bundle pricing
     totalPrice = twoBinBundlePrice;
+    bundleApplied = true;
+
+  } else if (largeBinsCount >= 2) {
+    // Apply bundle for 2 large bins, then add remaining bins at regular price
+    const bundledLargeBins = Math.floor(largeBinsCount / 2) * 2;
+    const extraLargeBins = largeBinsCount - bundledLargeBins;
+
+    totalPrice = Math.floor(largeBinsCount / 2) * twoBinBundlePrice;
+    totalPrice += (extraLargeBins * priceSet.waste); // Use waste price for extra large bins
+    totalPrice += (smallBinsCount * priceSet.food); // Use food price as base for small bins
+
+    // Add proper pricing for small bins
+    totalPrice -= (smallBinsCount * priceSet.food); // Remove the base
+    totalPrice += (foodCount * priceSet.food);
+    totalPrice += (recyclingCount * priceSet.recycling);
+    totalPrice += (recyclingBagCount * priceSet.recyclingBag);
+    bundleApplied = true;
+
   } else {
-    // Regular pricing
+    // Regular pricing - no bundles apply
     Object.keys(bookingData.bins).forEach(binType => {
       const quantity = bookingData.bins[binType];
       totalPrice += quantity * priceSet[binType];
