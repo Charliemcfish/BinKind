@@ -718,6 +718,9 @@ function updateTotal() {
     });
   }
 
+  // Store original price before discount
+  const originalPrice = totalPrice;
+
   // Apply first-time discount if enabled
   if (FIRST_TIME_DISCOUNT_ENABLED) {
     totalPrice = totalPrice * (1 - FIRST_TIME_DISCOUNT_PERCENTAGE / 100);
@@ -728,12 +731,22 @@ function updateTotal() {
 
   const totalBinsEl = document.getElementById('totalBins');
   const totalPriceEl = document.getElementById('totalPrice');
+  const originalPriceEl = document.getElementById('originalPrice');
 
   if (totalBinsEl) {
     totalBinsEl.textContent = totalBins;
   }
   if (totalPriceEl) {
     totalPriceEl.textContent = totalPrice.toFixed(2);
+  }
+  // Show original price with strikethrough if discount is enabled and bins are selected
+  if (originalPriceEl) {
+    if (FIRST_TIME_DISCOUNT_ENABLED && totalBins > 0) {
+      originalPriceEl.textContent = '£' + originalPrice.toFixed(2);
+      originalPriceEl.style.display = 'inline';
+    } else {
+      originalPriceEl.style.display = 'none';
+    }
   }
 
   // Show bundle deal notification if applicable
