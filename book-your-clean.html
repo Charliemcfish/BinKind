@@ -345,7 +345,10 @@
                 <!-- Running Total -->
                 <div class="booking-total">
                     <span class="total-bins">Total: <strong id="totalBins">0</strong> bins</span>
-                    <span class="total-price">£<span id="totalPrice">0.00</span></span>
+                    <span class="total-price">
+                        <span id="originalPrice" style="text-decoration: line-through; color: #999; margin-right: 0.5rem; font-size: 0.9em;"></span>
+                        £<span id="totalPrice">0.00</span>
+                    </span>
                 </div>
 
                 <div class="form-error visible" id="binsError" style="display: none; text-align: center; margin-top: 1rem;">
@@ -574,6 +577,6 @@
     </footer>
 
     <!-- JavaScript -->
-    <script src="js/main.js"></script>
+    <script src="js/main.js?v=2.0"></script>
 </body>
 </html>
