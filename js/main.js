@@ -510,6 +510,9 @@ function updateFrequencyInfo() {
 
   // Update bundle prices
   updateBundlePrices();
+
+  // Recalculate total with new frequency
+  updateTotal();
 }
 
 function updateBinPriceLabels() {
@@ -663,7 +666,7 @@ function updateTotal() {
   let bundleApplied = false;
 
   if (hasAllBins) {
-    // Apply "all bins" bundle pricing (1 waste + 1 garden + 1 food + 1 recycling)
+    // Apply "all bins" bundle pricing (1 waste + 1 garden + 1 food + 1 recycling + recycling bags included)
     totalPrice = frequency === 'oneoff' ? 25 : 15;
     bundleApplied = true;
 
@@ -672,12 +675,14 @@ function updateTotal() {
     const extraGarden = Math.max(0, gardenCount - 1);
     const extraFood = Math.max(0, foodCount - 1);
     const extraRecycling = Math.max(0, recyclingCount - 1);
+    // Only charge for extra recycling bags beyond the first one (first one is included in bundle)
+    const extraRecyclingBag = Math.max(0, recyclingBagCount - 1);
 
     totalPrice += (extraWaste * priceSet.waste);
     totalPrice += (extraGarden * priceSet.garden);
     totalPrice += (extraFood * priceSet.food);
     totalPrice += (extraRecycling * priceSet.recycling);
-    totalPrice += (recyclingBagCount * priceSet.recyclingBag);
+    totalPrice += (extraRecyclingBag * priceSet.recyclingBag);
 
   } else if (canStackBundles) {
     // Stack multiple 2-bin bundles (e.g., 4 large bins = 2x £20 or 2x £10)

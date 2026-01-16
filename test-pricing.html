@@ -212,12 +212,14 @@
                 const extraGarden = Math.max(0, gardenCount - 1);
                 const extraFood = Math.max(0, foodCount - 1);
                 const extraRecycling = Math.max(0, recyclingCount - 1);
+                // Only charge for extra recycling bags beyond the first one (first one is included in bundle)
+                const extraRecyclingBag = Math.max(0, recyclingBagCount - 1);
 
                 totalPrice += (extraWaste * priceSet.waste);
                 totalPrice += (extraGarden * priceSet.garden);
                 totalPrice += (extraFood * priceSet.food);
                 totalPrice += (extraRecycling * priceSet.recycling);
-                totalPrice += (recyclingBagCount * priceSet.recyclingBag);
+                totalPrice += (extraRecyclingBag * priceSet.recyclingBag);
 
             } else if (canStackBundles) {
                 totalPrice = numOfTwoBinBundles * twoBinBundlePrice;
@@ -280,9 +282,10 @@
             { bins: { waste: 4, garden: 0, food: 0, recycling: 0, recyclingBag: 0 }, expected: 32.00, description: "4 Waste Bins (2x Bundle)" },
             { bins: { waste: 2, garden: 2, food: 0, recycling: 0, recyclingBag: 0 }, expected: 32.00, description: "2 Waste + 2 Garden (2x Bundle)" },
 
-            // All bins bundle (£25 → £20 with 20% discount)
+            // All bins bundle (£25 → £20 with 20% discount, includes recycling bag)
             { bins: { waste: 1, garden: 1, food: 1, recycling: 1, recyclingBag: 0 }, expected: 20.00, description: "All 4 Main Bins (All Bins Bundle)" },
-            { bins: { waste: 1, garden: 1, food: 1, recycling: 1, recyclingBag: 1 }, expected: 22.40, description: "All Bins + Recycling Bag" },
+            { bins: { waste: 1, garden: 1, food: 1, recycling: 1, recyclingBag: 1 }, expected: 20.00, description: "All Bins + Recycling Bag (Included in Bundle)" },
+            { bins: { waste: 1, garden: 1, food: 1, recycling: 1, recyclingBag: 2 }, expected: 22.40, description: "All Bins + 2 Recycling Bags (1 extra charged)" },
 
             // All bins bundle + extras
             { bins: { waste: 2, garden: 1, food: 1, recycling: 1, recyclingBag: 0 }, expected: 29.60, description: "All Bins Bundle + 1 Extra Waste" },
@@ -318,9 +321,10 @@
             // Four large bins (2x bundle)
             { bins: { waste: 4, garden: 0, food: 0, recycling: 0, recyclingBag: 0 }, expected: 16.00, description: "4 Waste Bins (2x Bundle)" },
 
-            // All bins bundle (£15 → £12 with 20% discount)
+            // All bins bundle (£15 → £12 with 20% discount, includes recycling bag)
             { bins: { waste: 1, garden: 1, food: 1, recycling: 1, recyclingBag: 0 }, expected: 12.00, description: "All 4 Main Bins (All Bins Bundle)" },
-            { bins: { waste: 1, garden: 1, food: 1, recycling: 1, recyclingBag: 1 }, expected: 13.60, description: "All Bins + Recycling Bag" },
+            { bins: { waste: 1, garden: 1, food: 1, recycling: 1, recyclingBag: 1 }, expected: 12.00, description: "All Bins + Recycling Bag (Included in Bundle)" },
+            { bins: { waste: 1, garden: 1, food: 1, recycling: 1, recyclingBag: 2 }, expected: 13.60, description: "All Bins + 2 Recycling Bags (1 extra charged)" },
 
             // No bundles apply
             { bins: { waste: 1, garden: 0, food: 1, recycling: 0, recyclingBag: 0 }, expected: 6.40, description: "1 Waste + 1 Food (No Bundle)" },
