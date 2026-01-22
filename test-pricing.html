@@ -282,14 +282,15 @@
             { bins: { waste: 4, garden: 0, food: 0, recycling: 0, recyclingBag: 0 }, expected: 32.00, description: "4 Waste Bins (2x Bundle)" },
             { bins: { waste: 2, garden: 2, food: 0, recycling: 0, recyclingBag: 0 }, expected: 32.00, description: "2 Waste + 2 Garden (2x Bundle)" },
 
-            // All bins bundle (£25 → £20 with 20% discount, includes recycling bag)
-            { bins: { waste: 1, garden: 1, food: 1, recycling: 1, recyclingBag: 0 }, expected: 20.00, description: "All 4 Main Bins (All Bins Bundle)" },
-            { bins: { waste: 1, garden: 1, food: 1, recycling: 1, recyclingBag: 1 }, expected: 20.00, description: "All Bins + Recycling Bag (Included in Bundle)" },
-            { bins: { waste: 1, garden: 1, food: 1, recycling: 1, recyclingBag: 2 }, expected: 22.40, description: "All Bins + 2 Recycling Bags (1 extra charged)" },
+            // Complete Bin Package (£25 → £20 with 20% discount, includes 1 waste + 1 garden + 1 food + 2 recycling + 1 recycling bag)
+            { bins: { waste: 1, garden: 1, food: 1, recycling: 2, recyclingBag: 0 }, expected: 20.00, description: "Complete Bin Package (without recycling bag)" },
+            { bins: { waste: 1, garden: 1, food: 1, recycling: 2, recyclingBag: 1 }, expected: 20.00, description: "Complete Bin Package (with recycling bag included)" },
+            { bins: { waste: 1, garden: 1, food: 1, recycling: 2, recyclingBag: 2 }, expected: 22.40, description: "Complete Bin Package + 1 Extra Recycling Bag" },
 
-            // All bins bundle + extras
-            { bins: { waste: 2, garden: 1, food: 1, recycling: 1, recyclingBag: 0 }, expected: 29.60, description: "All Bins Bundle + 1 Extra Waste" },
-            { bins: { waste: 1, garden: 1, food: 2, recycling: 1, recyclingBag: 0 }, expected: 22.40, description: "All Bins Bundle + 1 Extra Food" },
+            // Complete Bin Package + extras
+            { bins: { waste: 2, garden: 1, food: 1, recycling: 2, recyclingBag: 0 }, expected: 29.60, description: "Complete Bin Package + 1 Extra Waste" },
+            { bins: { waste: 1, garden: 1, food: 2, recycling: 2, recyclingBag: 0 }, expected: 22.40, description: "Complete Bin Package + 1 Extra Food" },
+            { bins: { waste: 1, garden: 1, food: 1, recycling: 3, recyclingBag: 1 }, expected: 22.40, description: "Complete Bin Package + 1 Extra Recycling Container" },
 
             // No bundles apply
             { bins: { waste: 1, garden: 0, food: 1, recycling: 0, recyclingBag: 0 }, expected: 12.00, description: "1 Waste + 1 Food (No Bundle)" },
@@ -321,10 +322,10 @@
             // Four large bins (2x bundle)
             { bins: { waste: 4, garden: 0, food: 0, recycling: 0, recyclingBag: 0 }, expected: 16.00, description: "4 Waste Bins (2x Bundle)" },
 
-            // All bins bundle (£15 → £12 with 20% discount, includes recycling bag)
-            { bins: { waste: 1, garden: 1, food: 1, recycling: 1, recyclingBag: 0 }, expected: 12.00, description: "All 4 Main Bins (All Bins Bundle)" },
-            { bins: { waste: 1, garden: 1, food: 1, recycling: 1, recyclingBag: 1 }, expected: 12.00, description: "All Bins + Recycling Bag (Included in Bundle)" },
-            { bins: { waste: 1, garden: 1, food: 1, recycling: 1, recyclingBag: 2 }, expected: 13.60, description: "All Bins + 2 Recycling Bags (1 extra charged)" },
+            // Complete Bin Package (£15 → £12 with 20% discount, includes 1 waste + 1 garden + 1 food + 2 recycling + 1 recycling bag)
+            { bins: { waste: 1, garden: 1, food: 1, recycling: 2, recyclingBag: 0 }, expected: 12.00, description: "Complete Bin Package (without recycling bag)" },
+            { bins: { waste: 1, garden: 1, food: 1, recycling: 2, recyclingBag: 1 }, expected: 12.00, description: "Complete Bin Package (with recycling bag included)" },
+            { bins: { waste: 1, garden: 1, food: 1, recycling: 2, recyclingBag: 2 }, expected: 13.60, description: "Complete Bin Package + 1 Extra Recycling Bag" },
 
             // No bundles apply
             { bins: { waste: 1, garden: 0, food: 1, recycling: 0, recyclingBag: 0 }, expected: 6.40, description: "1 Waste + 1 Food (No Bundle)" },
