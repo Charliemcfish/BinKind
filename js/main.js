@@ -284,18 +284,31 @@ function showStep(step) {
         btn.style.boxShadow = 'none';
       }
     });
+
+    // Update recurring info display
+    const recurringInfo = document.getElementById('recurringInfo');
+    if (recurringInfo) {
+      if (bookingData.frequency === 'every6weeks') {
+        recurringInfo.style.display = 'block';
+      } else {
+        recurringInfo.style.display = 'none';
+      }
+    }
   }
 
-  // When showing step 3 (bin selection), ensure pricing matches the selected frequency
+  // When showing step 3 (bin selection), update all pricing based on selected frequency
   if (step === 3) {
-    // Explicitly ensure the frequency value is set correctly in the DOM
-    // Use bookingData.frequency as the source of truth since it was saved in saveStepData(2)
+    // Sync DOM input with bookingData (for form validation purposes)
     const frequencyEl = document.getElementById('frequency');
     if (frequencyEl && bookingData.frequency) {
       frequencyEl.value = bookingData.frequency;
+    } else if (frequencyEl && !bookingData.frequency) {
+      // If no frequency set, default to oneoff
+      bookingData.frequency = 'oneoff';
+      frequencyEl.value = 'oneoff';
     }
 
-    // Now update all pricing based on the correct frequency
+    // Update all pricing - these functions now use bookingData.frequency directly
     updateBinPriceLabels();
     updateBundlePrices();
     updateTotal();
@@ -526,8 +539,18 @@ function selectFrequency(frequency) {
   // Hide error if shown
   hideError('frequencyError');
 
-  // Update frequency info
-  updateFrequencyInfo();
+  // Update recurring info display (just the info message on step 2)
+  const recurringInfo = document.getElementById('recurringInfo');
+  if (recurringInfo) {
+    if (frequency === 'every6weeks') {
+      recurringInfo.style.display = 'block';
+    } else {
+      recurringInfo.style.display = 'none';
+    }
+  }
+
+  // DO NOT call updateFrequencyInfo() here - prices should only be updated when step 3 is shown
+  // This prevents pricing confusion when switching between frequencies on step 2
 }
 
 function updateFrequencyInfo() {
@@ -555,10 +578,8 @@ function updateFrequencyInfo() {
 }
 
 function updateBinPriceLabels() {
-  const frequencyEl = document.getElementById('frequency');
-  if (!frequencyEl) return;
-
-  const frequency = frequencyEl.value;
+  // Use bookingData.frequency as the source of truth, fallback to oneoff
+  const frequency = bookingData.frequency || 'oneoff';
   const label = frequency === 'every6weeks' ? '(Every 6 Weeks)' : '(One-Off)';
   const priceSet = binPrices[frequency] || binPrices.oneoff;
 
@@ -671,8 +692,8 @@ function updateTotal() {
   let totalBins = 0;
   let totalPrice = 0;
 
-  // Get current frequency (default to oneoff if not set)
-  const frequency = document.getElementById('frequency')?.value || 'oneoff';
+  // Get current frequency from bookingData (source of truth), fallback to oneoff
+  const frequency = bookingData.frequency || 'oneoff';
   const priceSet = binPrices[frequency] || binPrices.oneoff;
 
   // Count total bins
@@ -1111,7 +1132,8 @@ function selectBundle(bundleType) {
 
 // Update bundle deal prices when frequency changes
 function updateBundlePrices() {
-  const frequency = document.getElementById('frequency')?.value || 'oneoff';
+  // Use bookingData.frequency as the source of truth, fallback to oneoff
+  const frequency = bookingData.frequency || 'oneoff';
 
   // Two bins bundle
   const twoBinsPrice = document.getElementById('twoBinsPrice');
