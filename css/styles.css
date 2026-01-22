@@ -1955,6 +1955,15 @@ p {
   }
 
   /* Bundle Buttons - Mobile Fixes */
+  .bundle-deals-container {
+    padding: 1rem !important;
+  }
+
+  .bundle-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+  }
+
   .bundle-btn {
     padding: 1rem !important;
   }

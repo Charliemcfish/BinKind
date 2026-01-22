@@ -264,6 +264,13 @@ function showStep(step) {
       s.classList.add('active');
     }
   });
+
+  // When showing step 3 (bin selection), update pricing based on selected frequency
+  if (step === 3) {
+    updateBinPriceLabels();
+    updateBundlePrices();
+    updateTotal();
+  }
 }
 
 function updateProgressBar() {
