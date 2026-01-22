@@ -655,8 +655,8 @@ function updateTotal() {
   // Bundle Deal 1: Two large waste bins (waste or garden) for £20 one-off / £10 monthly
   const hasTwoLargeBins = largeBinsCount === 2 && smallBinsCount === 0;
 
-  // Bundle Deal 2: All bins for £25 one-off / £15 monthly (at least 1 of each type)
-  const hasAllBins = wasteCount >= 1 && gardenCount >= 1 && foodCount >= 1 && recyclingCount >= 1;
+  // Bundle Deal 2: Complete Bin Package for £25 one-off / £15 monthly (1 waste + 1 garden + 1 food + 2 recycling + 1 recycling bag)
+  const hasAllBins = wasteCount >= 1 && gardenCount >= 1 && foodCount >= 1 && recyclingCount >= 2;
 
   // Check if we can apply stacked bundle deals (e.g., 2 waste + 2 garden = 2x bundle deal)
   const twoBinBundlePrice = frequency === 'oneoff' ? 20 : 10;
@@ -666,7 +666,7 @@ function updateTotal() {
   let bundleApplied = false;
 
   if (hasAllBins) {
-    // Apply "all bins" bundle pricing (1 waste + 1 garden + 1 food + 1 recycling + recycling bags included)
+    // Apply "Complete Bin Package" pricing (1 waste + 1 garden + 1 food + 2 recycling + 1 recycling bag)
     totalPrice = frequency === 'oneoff' ? 25 : 15;
     bundleApplied = true;
 
@@ -674,7 +674,7 @@ function updateTotal() {
     const extraWaste = Math.max(0, wasteCount - 1);
     const extraGarden = Math.max(0, gardenCount - 1);
     const extraFood = Math.max(0, foodCount - 1);
-    const extraRecycling = Math.max(0, recyclingCount - 1);
+    const extraRecycling = Math.max(0, recyclingCount - 2);
     // Only charge for extra recycling bags beyond the first one (first one is included in bundle)
     const extraRecyclingBag = Math.max(0, recyclingBagCount - 1);
 
@@ -766,7 +766,7 @@ function showBundleNotification(hasAllBins, hasTwoLargeBins, frequency) {
   let message = '';
   if (hasAllBins) {
     const price = frequency === 'oneoff' ? '£25' : '£15';
-    message = `🎉 Bundle Deal Applied! All bins for ${price}`;
+    message = `🎉 Bundle Deal Applied! Complete Bin Package for ${price}`;
   } else if (hasTwoLargeBins) {
     const price = frequency === 'oneoff' ? '£20' : '£10';
     message = `🎉 Bundle Deal Applied! Two waste bins for ${price}`;
@@ -1041,11 +1041,11 @@ function selectBundle(bundleType) {
     bookingData.bins.waste = 1;
     bookingData.bins.garden = 1;
   } else if (bundleType === 'fourBins') {
-    // All bins including recycling bag
+    // Complete Bin Package: 2 Large bins, x2 Containers, x1 Food caddy and x1 Recycling bag
     bookingData.bins.waste = 1;
     bookingData.bins.garden = 1;
     bookingData.bins.food = 1;
-    bookingData.bins.recycling = 1;
+    bookingData.bins.recycling = 2;
     bookingData.bins.recyclingBag = 1;
   }
 
