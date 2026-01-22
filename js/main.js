@@ -265,8 +265,37 @@ function showStep(step) {
     }
   });
 
-  // When showing step 3 (bin selection), update pricing based on selected frequency
+  // When showing step 2 (frequency selection), restore the saved frequency selection
+  if (step === 2 && bookingData.frequency) {
+    const frequencyEl = document.getElementById('frequency');
+    if (frequencyEl) {
+      frequencyEl.value = bookingData.frequency;
+    }
+
+    // Update button styles to show the selected frequency
+    document.querySelectorAll('.frequency-btn').forEach(btn => {
+      if (btn.dataset.frequency === bookingData.frequency) {
+        btn.style.borderColor = '#5b8855';
+        btn.style.backgroundColor = 'rgba(91, 136, 85, 0.05)';
+        btn.style.boxShadow = '0 4px 12px rgba(91, 136, 85, 0.2)';
+      } else {
+        btn.style.borderColor = '#e0e0e0';
+        btn.style.backgroundColor = 'white';
+        btn.style.boxShadow = 'none';
+      }
+    });
+  }
+
+  // When showing step 3 (bin selection), ensure pricing matches the selected frequency
   if (step === 3) {
+    // Explicitly ensure the frequency value is set correctly in the DOM
+    // Use bookingData.frequency as the source of truth since it was saved in saveStepData(2)
+    const frequencyEl = document.getElementById('frequency');
+    if (frequencyEl && bookingData.frequency) {
+      frequencyEl.value = bookingData.frequency;
+    }
+
+    // Now update all pricing based on the correct frequency
     updateBinPriceLabels();
     updateBundlePrices();
     updateTotal();
@@ -477,6 +506,9 @@ function saveStepData(step) {
 function selectFrequency(frequency) {
   // Update hidden input
   document.getElementById('frequency').value = frequency;
+
+  // Immediately save to bookingData to ensure consistency
+  bookingData.frequency = frequency;
 
   // Update button styles
   document.querySelectorAll('.frequency-btn').forEach(btn => {
