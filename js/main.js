@@ -1144,7 +1144,7 @@ function updateBundlePrices() {
     twoBinsPrice.textContent = frequency === 'oneoff' ? '20' : '10';
   }
   if (twoBinsLabel) {
-    twoBinsLabel.textContent = frequency === 'oneoff' ? 'one-off' : 'monthly';
+    twoBinsLabel.textContent = frequency === 'oneoff' ? 'one-off' : 'every 6 weeks';
   }
   if (twoBinsMonthly) {
     twoBinsMonthly.textContent = frequency === 'oneoff' ? '£10/month' : 'subscription';
@@ -1159,7 +1159,7 @@ function updateBundlePrices() {
     fourBinsPrice.textContent = frequency === 'oneoff' ? '25' : '15';
   }
   if (fourBinsLabel) {
-    fourBinsLabel.textContent = frequency === 'oneoff' ? 'one-off' : 'monthly';
+    fourBinsLabel.textContent = frequency === 'oneoff' ? 'one-off' : 'every 6 weeks';
   }
   if (fourBinsMonthly) {
     fourBinsMonthly.textContent = frequency === 'oneoff' ? '£15/month' : 'subscription';
