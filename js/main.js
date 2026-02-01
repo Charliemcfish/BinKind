@@ -9,7 +9,7 @@
 // FIRST-TIME DISCOUNT TOGGLE
 // Set this to true to enable 20% off first-time discount
 // Set this to false to disable the discount
-const FIRST_TIME_DISCOUNT_ENABLED = true;
+const FIRST_TIME_DISCOUNT_ENABLED = false;
 const FIRST_TIME_DISCOUNT_PERCENTAGE = 20;
 
 let currentStep = 1;
