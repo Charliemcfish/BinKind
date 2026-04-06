@@ -71,11 +71,19 @@ document.addEventListener('DOMContentLoaded', function() {
   initContactForm();
   initBookingForm();
 
-  // Hide promo banner when discount is disabled
+  // Hide promo banner and adjust layout when discount is disabled
   if (!FIRST_TIME_DISCOUNT_ENABLED) {
     const promoBanner = document.querySelector('.promo-banner');
     if (promoBanner) {
       promoBanner.style.display = 'none';
+    }
+    const navbar = document.querySelector('.navbar');
+    if (navbar) {
+      navbar.style.top = '0';
+    }
+    const hero = document.querySelector('.hero');
+    if (hero) {
+      hero.style.marginTop = '70px';
     }
   }
 });
