@@ -9,7 +9,7 @@
 // FIRST-TIME DISCOUNT TOGGLE
 // Set this to true to enable 20% off first-time discount
 // Set this to false to disable the discount
-const FIRST_TIME_DISCOUNT_ENABLED = true;
+const FIRST_TIME_DISCOUNT_ENABLED = false;
 const FIRST_TIME_DISCOUNT_PERCENTAGE = 20;
 
 let currentStep = 1;
@@ -44,10 +44,10 @@ let bookingData = {
 // Bin pricing - separate rates for one-off and monthly
 const binPrices = {
   oneoff: {
-    waste: 12,
+    waste: 15,
     food: 3,
     recycling: 3,
-    garden: 12,
+    garden: 15,
     recyclingBag: 3
   },
   every6weeks: {
@@ -70,6 +70,14 @@ document.addEventListener('DOMContentLoaded', function() {
   initScrollAnimations();
   initContactForm();
   initBookingForm();
+
+  // Hide promo banner when discount is disabled
+  if (!FIRST_TIME_DISCOUNT_ENABLED) {
+    const promoBanner = document.querySelector('.promo-banner');
+    if (promoBanner) {
+      promoBanner.style.display = 'none';
+    }
+  }
 });
 
 // ============================================
@@ -719,7 +727,7 @@ function updateTotal() {
   const hasAllBins = wasteCount >= 1 && gardenCount >= 1 && foodCount >= 1 && recyclingCount >= 2;
 
   // Check if we can apply stacked bundle deals (e.g., 2 waste + 2 garden = 2x bundle deal)
-  const twoBinBundlePrice = frequency === 'oneoff' ? 20 : 10;
+  const twoBinBundlePrice = frequency === 'oneoff' ? 25 : 10;
   const numOfTwoBinBundles = Math.floor(largeBinsCount / 2);
   const canStackBundles = largeBinsCount >= 4 && largeBinsCount % 2 === 0 && smallBinsCount === 0;
 
@@ -727,7 +735,7 @@ function updateTotal() {
 
   if (hasAllBins) {
     // Apply "Complete Bin Package" pricing (1 waste + 1 garden + 1 food + 2 recycling + 1 recycling bag)
-    totalPrice = frequency === 'oneoff' ? 25 : 15;
+    totalPrice = frequency === 'oneoff' ? 35 : 15;
     bundleApplied = true;
 
     // Add extra bins beyond the bundle
@@ -825,10 +833,10 @@ function showBundleNotification(hasAllBins, hasTwoLargeBins, frequency) {
 
   let message = '';
   if (hasAllBins) {
-    const price = frequency === 'oneoff' ? '£25' : '£15';
+    const price = frequency === 'oneoff' ? '£35' : '£15';
     message = `🎉 Bundle Deal Applied! Complete Bin Package for ${price}`;
   } else if (hasTwoLargeBins) {
-    const price = frequency === 'oneoff' ? '£20' : '£10';
+    const price = frequency === 'oneoff' ? '£25' : '£10';
     message = `🎉 Bundle Deal Applied! Two waste bins for ${price}`;
   }
 
@@ -1141,7 +1149,7 @@ function updateBundlePrices() {
   const twoBinsMonthly = document.getElementById('twoBinsMonthly');
 
   if (twoBinsPrice) {
-    twoBinsPrice.textContent = frequency === 'oneoff' ? '20' : '10';
+    twoBinsPrice.textContent = frequency === 'oneoff' ? '25' : '10';
   }
   if (twoBinsLabel) {
     twoBinsLabel.textContent = frequency === 'oneoff' ? 'one-off' : 'every 6 weeks';
@@ -1156,7 +1164,7 @@ function updateBundlePrices() {
   const fourBinsMonthly = document.getElementById('fourBinsMonthly');
 
   if (fourBinsPrice) {
-    fourBinsPrice.textContent = frequency === 'oneoff' ? '25' : '15';
+    fourBinsPrice.textContent = frequency === 'oneoff' ? '35' : '15';
   }
   if (fourBinsLabel) {
     fourBinsLabel.textContent = frequency === 'oneoff' ? 'one-off' : 'every 6 weeks';
