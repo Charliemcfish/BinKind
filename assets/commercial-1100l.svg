@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 800">
+  <defs>
+    <style>
+      .body { fill: #1a3a6b; }
+      .body-dark { fill: #14305a; }
+      .detail { fill: #fff; opacity: .15; }
+      .wheel { fill: #3f3f3d; }
+    </style>
+  </defs>
+  <!-- Main body -->
+  <path class="body" d="M110,240 L78,650 C78,678,100,695,132,695 L868,695 C900,695,922,678,922,650 L890,240 Z"/>
+  <!-- Side handle left -->
+  <rect class="body-dark" x="54" y="370" width="32" height="130"/>
+  <!-- Side handle right -->
+  <rect class="body-dark" x="914" y="370" width="32" height="130"/>
+  <!-- Lid -->
+  <path d="M95,240 L905,240 L915,190 C915,162,900,148,868,148 L132,148 C100,148,85,162,85,190 Z" fill="#3f3f3d"/>
+  <!-- Leaf decoration (contained within body) -->
+  <path class="detail" d="M450,640s-42-65-19-110c0,0,90,2.7,136-65,46-68,28-110,63-150,0,0-21,8.4-82,13-60,4.6-162,54-148,160,0,0,23-62,108-87,0,0-90,51-100,120-10,68,42,119,42,119"/>
+  <!-- Left wheel assembly -->
+  <rect class="wheel" x="178" y="682" width="50" height="56"/>
+  <circle class="wheel" cx="203" cy="754" r="36"/>
+  <circle cx="203" cy="754" r="16" fill="#2d2d2d"/>
+  <!-- Right wheel assembly -->
+  <rect class="wheel" x="772" y="682" width="50" height="56"/>
+  <circle class="wheel" cx="797" cy="754" r="36"/>
+  <circle cx="797" cy="754" r="16" fill="#2d2d2d"/>
+</svg>

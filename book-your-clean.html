@@ -43,6 +43,7 @@
                     <a href="index.html" class="navbar-link">Home</a>
                     <a href="about.html" class="navbar-link">About</a>
                     <a href="areas-covered.html" class="navbar-link">Areas Covered</a>
+                    <a href="commercial.html" class="navbar-link">Commercial</a>
                     <a href="contact.html" class="navbar-link">Contact</a>
                 </div>
                 <div class="navbar-cta">
@@ -64,6 +65,7 @@
         <a href="index.html" class="navbar-link">Home</a>
         <a href="about.html" class="navbar-link">About</a>
         <a href="areas-covered.html" class="navbar-link">Areas Covered</a>
+        <a href="commercial.html" class="navbar-link">Commercial</a>
         <a href="contact.html" class="navbar-link">Contact</a>
         <a href="book-your-clean.html" class="btn btn-primary btn-large">Book Your Clean</a>
     </div>
@@ -435,6 +437,29 @@
                     </div>
                 </div>
 
+                <!-- Discount Code -->
+                <div class="summary-section" style="background: white; border-radius: 12px; padding: 1.5rem; margin-top: 1.5rem;" id="discountCodeSection">
+                    <h3>Have a Discount Code?</h3>
+                    <div style="display: flex; gap: 0.75rem; margin-top: 1rem; align-items: start;">
+                        <div style="flex: 1;">
+                            <input type="text" id="discountCodeInput" class="form-input" placeholder="Enter discount code" style="text-transform: uppercase; margin-bottom: 0;">
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="applyDiscountCode()" id="applyDiscountBtn" style="white-space: nowrap; padding: 0.75rem 1.5rem;">Apply</button>
+                    </div>
+                    <div id="discountCodeError" style="display: none; color: #f44336; font-size: 0.85rem; margin-top: 0.5rem; font-weight: 500;">
+                        Invalid discount code. Please try again.
+                    </div>
+                    <div id="discountCodeSuccess" style="display: none; background: #e8f5e9; border: 2px solid #5b8855; border-radius: 8px; padding: 1rem; margin-top: 0.75rem;">
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div>
+                                <span style="color: #1b5e20; font-weight: 700;">Discount Applied!</span>
+                                <span id="discountDetail" style="color: #424242; margin-left: 0.5rem;"></span>
+                            </div>
+                            <button type="button" onclick="removeDiscountCode()" style="background: none; border: none; color: #f44336; cursor: pointer; font-weight: 600; font-size: 0.9rem;">Remove</button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Payment Information -->
                 <div class="summary-section" style="background: #f5f5f5; border-radius: 12px; padding: 1.5rem; margin-top: 1.5rem;">
                     <h3>Payment Information</h3>
@@ -552,6 +577,7 @@
                         <a href="about.html" class="footer-link">About</a>
                         <a href="areas-covered.html" class="footer-link">Areas Covered</a>
                         <a href="contact.html" class="footer-link">Contact Us</a>
+                        <a href="commercial.html" class="footer-link">Commercial</a>
                         <a href="book-your-clean.html" class="footer-link">Book Now</a>
                         <a href="terms-and-conditions.html" class="footer-link">Terms & Conditions</a>
                     </div>

@@ -2114,6 +2114,13 @@ p {
   outline-offset: 2px;
 }
 
+/* Commercial page 3-column responsive override */
+@media (max-width: 768px) {
+  [style*="grid-template-columns: 1fr 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 /* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   *,

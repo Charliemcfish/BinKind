@@ -12,6 +12,14 @@
 const FIRST_TIME_DISCOUNT_ENABLED = false;
 const FIRST_TIME_DISCOUNT_PERCENTAGE = 20;
 
+// DISCOUNT CODE CONFIGURATION
+// Set DISCOUNT_CODE_ENABLED to true/false to enable/disable the discount code feature
+// Change DISCOUNT_CODE_STRING to change the accepted discount code
+// Change DISCOUNT_CODE_PERCENTAGE to change the discount amount
+const DISCOUNT_CODE_ENABLED = true;
+const DISCOUNT_CODE_STRING = 'BIN25';
+const DISCOUNT_CODE_PERCENTAGE = 25;
+
 let currentStep = 1;
 let bookingData = {
   // Step 1
@@ -61,6 +69,9 @@ const binPrices = {
 
 // Collection day state
 let selectedCollectionDay = null;
+
+// Discount code state
+let discountCodeApplied = false;
 
 // ============================================
 // INITIALIZATION
@@ -861,6 +872,17 @@ function showBundleNotification(hasAllBins, hasTwoLargeBins, frequency) {
 // BOOKING SUMMARY
 // ============================================
 function populateSummary() {
+  // Reset discount code state when repopulating summary
+  discountCodeApplied = false;
+  const discountInput = document.getElementById('discountCodeInput');
+  if (discountInput) { discountInput.value = ''; discountInput.disabled = false; }
+  const discountSuccess = document.getElementById('discountCodeSuccess');
+  if (discountSuccess) discountSuccess.style.display = 'none';
+  const discountError = document.getElementById('discountCodeError');
+  if (discountError) discountError.style.display = 'none';
+  const applyBtn = document.getElementById('applyDiscountBtn');
+  if (applyBtn) { applyBtn.disabled = false; applyBtn.style.opacity = '1'; }
+
   // Your Details
   document.getElementById('summaryName').textContent = bookingData.customerName;
   document.getElementById('summaryAddress').textContent =
@@ -980,7 +1002,8 @@ async function completeBooking() {
       frequency: bookingData.frequency,
       bins: bookingData.bins,
       totalBins: bookingData.totalBins,
-      totalPrice: bookingData.totalPrice,
+      totalPrice: discountCodeApplied ? bookingData.discountedPrice : bookingData.totalPrice,
+      discountCode: discountCodeApplied ? DISCOUNT_CODE_STRING : null,
       collectionDay: selectedCollectionDay
     };
 
@@ -1179,5 +1202,139 @@ function updateBundlePrices() {
   }
   if (fourBinsMonthly) {
     fourBinsMonthly.textContent = frequency === 'oneoff' ? '£15/month' : 'subscription';
+  }
+}
+
+// ============================================
+// DISCOUNT CODE SYSTEM
+// ============================================
+function applyDiscountCode() {
+  const input = document.getElementById('discountCodeInput');
+  const errorEl = document.getElementById('discountCodeError');
+  const successEl = document.getElementById('discountCodeSuccess');
+  const detailEl = document.getElementById('discountDetail');
+
+  if (!input) return;
+
+  const code = input.value.trim().toUpperCase();
+
+  if (!DISCOUNT_CODE_ENABLED || code !== DISCOUNT_CODE_STRING) {
+    errorEl.style.display = 'block';
+    successEl.style.display = 'none';
+    discountCodeApplied = false;
+    updateSummaryWithDiscount();
+    return;
+  }
+
+  // Valid code
+  discountCodeApplied = true;
+  errorEl.style.display = 'none';
+  successEl.style.display = 'block';
+  detailEl.textContent = DISCOUNT_CODE_PERCENTAGE + '% off with code ' + DISCOUNT_CODE_STRING;
+  input.disabled = true;
+  document.getElementById('applyDiscountBtn').disabled = true;
+  document.getElementById('applyDiscountBtn').style.opacity = '0.5';
+
+  updateSummaryWithDiscount();
+}
+
+function removeDiscountCode() {
+  discountCodeApplied = false;
+
+  const input = document.getElementById('discountCodeInput');
+  const errorEl = document.getElementById('discountCodeError');
+  const successEl = document.getElementById('discountCodeSuccess');
+
+  if (input) {
+    input.value = '';
+    input.disabled = false;
+  }
+  if (errorEl) errorEl.style.display = 'none';
+  if (successEl) successEl.style.display = 'none';
+
+  const applyBtn = document.getElementById('applyDiscountBtn');
+  if (applyBtn) {
+    applyBtn.disabled = false;
+    applyBtn.style.opacity = '1';
+  }
+
+  updateSummaryWithDiscount();
+}
+
+function updateSummaryWithDiscount() {
+  const summaryTotalEl = document.getElementById('summaryTotal');
+  if (!summaryTotalEl) return;
+
+  if (discountCodeApplied) {
+    const originalPrice = bookingData.totalPrice;
+    const discountedPrice = originalPrice * (1 - DISCOUNT_CODE_PERCENTAGE / 100);
+    bookingData.discountedPrice = discountedPrice;
+    summaryTotalEl.innerHTML = '<span style="text-decoration: line-through; color: #999; margin-right: 0.5rem; font-size: 0.85em;">' + originalPrice.toFixed(2) + '</span> ' + discountedPrice.toFixed(2);
+  } else {
+    bookingData.discountedPrice = null;
+    summaryTotalEl.textContent = bookingData.totalPrice.toFixed(2);
+  }
+}
+
+// Hide discount code section if feature is disabled
+document.addEventListener('DOMContentLoaded', function() {
+  if (!DISCOUNT_CODE_ENABLED) {
+    const discountSection = document.getElementById('discountCodeSection');
+    if (discountSection) {
+      discountSection.style.display = 'none';
+    }
+  }
+
+  // Initialize commercial form validation
+  initCommercialForm();
+});
+
+// ============================================
+// COMMERCIAL FORM
+// ============================================
+function initCommercialForm() {
+  const commercialForm = document.getElementById('commercialForm');
+
+  if (commercialForm) {
+    commercialForm.addEventListener('submit', function(e) {
+      const businessName = document.getElementById('businessName').value.trim();
+      const name = document.getElementById('commercialName').value.trim();
+      const email = document.getElementById('commercialEmail').value.trim();
+      const message = document.getElementById('commercialMessage').value.trim();
+
+      let isValid = true;
+
+      if (businessName === '') {
+        showError('businessNameError');
+        isValid = false;
+      } else {
+        hideError('businessNameError');
+      }
+
+      if (name === '') {
+        showError('commercialNameError');
+        isValid = false;
+      } else {
+        hideError('commercialNameError');
+      }
+
+      if (!isValidEmail(email)) {
+        showError('commercialEmailError');
+        isValid = false;
+      } else {
+        hideError('commercialEmailError');
+      }
+
+      if (message === '') {
+        showError('commercialMessageError');
+        isValid = false;
+      } else {
+        hideError('commercialMessageError');
+      }
+
+      if (!isValid) {
+        e.preventDefault();
+      }
+    });
   }
 }
